@@ -6,7 +6,6 @@ import {
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent } from "@/components/ai-elements/message";
-import { Fragment } from "react";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -29,6 +28,7 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { Actions, Action } from "@/components/ai-elements/actions";
+import { Fragment } from "react";
 import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
@@ -57,7 +57,7 @@ const models = [
   },
 ];
 
-const AIChat = () => {
+const ChatBotDemo = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
@@ -233,4 +233,4 @@ const AIChat = () => {
   );
 };
 
-export default AIChat;
+export default ChatBotDemo;
