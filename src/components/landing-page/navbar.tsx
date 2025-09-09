@@ -1,17 +1,44 @@
 "use client";
+
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 import React from "react";
+import { cn } from "@/lib/utils";
 
-const menuItems = [
-  { name: "Features", href: "#link" },
-  { name: "Solution", href: "#link" },
-  { name: "Pricing", href: "#link" },
-  { name: "About", href: "#link" },
+interface MenuItems {
+  name: string;
+  href: string;
+}
+
+const menuItems: MenuItems[] = [
+  { name: "Features", href: "#features" },
+  { name: "Content", href: "#content" },
+  { name: "Stats", href: "#stats" },
+  { name: "Testimonials", href: "#testimonials" },
+  { name: "Pricing", href: "#pricing" },
+  { name: "FAQs", href: "#faqs" },
 ];
 
+const authMenuItems: MenuItems[] = [
+  { name: "Home", href: "/" },
+  { name: "Features", href: "/features" },
+  { name: "Content", href: "/content" },
+  { name: "Stats", href: "/stats" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "FAQs", href: "/faqs" },
+];
+
+type AuthPages = "signup" | "login" | "forgot-password" | undefined;
+
 export const Navbar = () => {
+  const pathname: string = usePathname();
+  const route: string = pathname.split("/")[1] || "";
+
+  const authRoutes: AuthPages[] = ["signup", "login", "forgot-password"];
+  const authNav = authRoutes.includes(route as AuthPages);
+
   const [menuState, setMenuState] = React.useState(false);
   return (
     <header>
@@ -20,7 +47,12 @@ export const Navbar = () => {
         className="bg-background/50 fixed z-20 w-full border-b backdrop-blur-3xl"
       >
         <div className="mx-auto max-w-6xl px-6 transition-all duration-300">
-          <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+          <div
+            className={cn(
+              "relative flex flex-wrap items-center gap-6 py-3 lg:gap-0 lg:py-4",
+              authNav ? "!justify-center" : "!justify-between",
+            )}
+          >
             <div className="flex w-full items-center justify-between gap-12 lg:w-auto">
               <button
                 onClick={() => setMenuState(!menuState)}
@@ -33,7 +65,7 @@ export const Navbar = () => {
 
               <div className="hidden lg:block">
                 <ul className="flex gap-8 text-sm">
-                  {menuItems.map((item, index) => (
+                  {(authNav ? authMenuItems : menuItems).map((item, index) => (
                     <li key={index}>
                       <Link
                         href={item.href}
@@ -49,7 +81,7 @@ export const Navbar = () => {
             <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
               <div className="lg:hidden">
                 <ul className="space-y-6 text-base">
-                  {menuItems.map((item, index) => (
+                  {(authNav ? authMenuItems : menuItems).map((item, index) => (
                     <li key={index}>
                       <Link
                         href={item.href}
@@ -61,18 +93,20 @@ export const Navbar = () => {
                   ))}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/login">
-                    <span>Login</span>
-                  </Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link href="/signup">
-                    <span>Sign Up</span>
-                  </Link>
-                </Button>
-              </div>
+              {!authNav && (
+                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/login">
+                      <span>Login</span>
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm">
+                    <Link href="/signup">
+                      <span>Sign Up</span>
+                    </Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

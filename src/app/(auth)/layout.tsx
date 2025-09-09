@@ -1,3 +1,5 @@
+import { Navbar } from "@/components/landing-page/navbar";
+
 export default function AuthLayout({
   children,
 }: {
@@ -5,6 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen w-full bg-black relative">
+      <Navbar />
       <div
         className="absolute inset-0 z-0 dark:block hidden"
         style={{
