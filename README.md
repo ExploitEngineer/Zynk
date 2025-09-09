@@ -109,7 +109,7 @@ This project is licensed under the **MIT License**.
 
 ## 📩 Contact
 
-For inquiries, reach out at **[your-email@example.com](mailto:your-email@example.com)**.
+For inquiries, reach out at **[abdulrafayofficial.work@gmail.com](mailto:abdulrafayofficial.work@gmail.com)**.
 
 ---
 
