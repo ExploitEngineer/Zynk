@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zynk
 
-## Getting Started
+Zynk is an AI-powered chat platform built with **Next.js**, **TypeScript**, and **shadcn/ui**, designed to provide seamless AI conversations with secure authentication, chat management, pricing plans, and a polished, modern interface.
 
-First, run the development server:
+---
+
+## 🚀 Features
+
+- 🤖 **AI-Powered Chat** – Engage in intelligent real-time conversations
+- 🗂️ **Chat Management** – Create, view, and delete conversations easily
+- 🕒 **Persistent History** – Store and retrieve previous chats
+- 🔐 **Authentication** – Secure login, signup, and session management
+- 💳 **Pricing & Subscriptions** – Flexible plans for different users
+- 🎨 **Modern UI** – Powered by **shadcn/ui** and **Tailwind CSS**
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer          | Technology                |
+| -------------- | ------------------------- |
+| Frontend       | Next.js + TypeScript      |
+| Styling & UI   | TailwindCSS + shadcn/ui   |
+| AI Integration | OpenAI / Custom LLMs      |
+| Authentication | JWT / NextAuth / Sessions |
+| Database       | **MongoDB**               |
+| Payments       | Stripe / Other APIs       |
+
+---
+
+## ⚡ Getting Started
+
+**Clone the repository:**
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ExploitEngineer/Zynk.git
+cd Zynk
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Install dependencies:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Run the development server:**
 
-## Learn More
+```bash
+pnpm dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Now open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧩 Architecture Overview
 
-## Deploy on Vercel
+```
+           ┌──────────────────┐
+           │   Next.js UI     │
+           │  (Frontend)      │
+           └────────┬─────────┘
+                    │
+                    ▼
+          ┌─────────────────────┐
+          │   API Layer         │
+          │  (Chat, Auth, etc.) │
+          └────────┬────────────┘
+                   │
+     ┌─────────────┴─────────────┐
+     │                           │
+     ▼                           ▼
+┌──────────────┐        ┌─────────────────┐
+│   AI Engine  │        │    MongoDB      │
+│ LLM / OpenAI │        │ Store chats,    │
+│  responses   │        │ users, pricing  │
+└──────────────┘        └─────────────────┘
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+        ┌─────────────────────┐
+        │  Authentication     │
+        │  (JWT / Sessions)   │
+        └──────────┬──────────┘
+                   │
+        ┌──────────▼──────────┐
+        │   Pricing & Plans   │
+        │   (Stripe / APIs)   │
+        └─────────────────────┘
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🤝 Contributing
+
+We welcome contributions!
+
+1. Fork the repo
+2. Create your feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -m "Add new feature"`
+4. Push to your branch: `git push origin feature-name`
+5. Open a pull request
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 📩 Contact
+
+For inquiries, reach out at **[your-email@example.com](mailto:your-email@example.com)**.
+
+---
+
+Zynk – _Where AI Conversations Meet Simplicity & Power_ 🚀
