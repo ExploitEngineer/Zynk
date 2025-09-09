@@ -57,7 +57,7 @@ const models = [
   },
 ];
 
-const ChatBotDemo = () => {
+const AIChat = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
@@ -233,4 +233,4 @@ const ChatBotDemo = () => {
   );
 };
 
-export default ChatBotDemo;
+export default AIChat;
