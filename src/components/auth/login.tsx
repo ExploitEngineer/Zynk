@@ -57,7 +57,7 @@ export default function LoginComponent() {
                 </Label>
                 <Button asChild variant="link" size="sm">
                   <Link
-                    href="#"
+                    href="/forgot-password"
                     className="link intent-info variant-ghost text-sm"
                   >
                     Forgot your Password ?
@@ -81,7 +81,7 @@ export default function LoginComponent() {
           <p className="text-accent-foreground text-center text-sm">
             Don't have an account ?
             <Button asChild variant="link" className="px-2">
-              <Link href="#">Create account</Link>
+              <Link href="/signup">Create account</Link>
             </Button>
           </p>
         </div>
