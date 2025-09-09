@@ -6,10 +6,8 @@ import { CheckIcon, CopyIcon } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
 import { createContext, useContext, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
+import oneDark from "react-syntax-highlighter/dist/cjs/styles/prism/one-dark";
+import oneLight from "react-syntax-highlighter/dist/cjs/styles/prism/one-light";
 
 type CodeBlockContextType = {
   code: string;
@@ -38,7 +36,7 @@ export const CodeBlock = ({
     <div
       className={cn(
         "relative w-full overflow-hidden rounded-md border bg-background text-foreground",
-        className
+        className,
       )}
       {...props}
     >
