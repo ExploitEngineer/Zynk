@@ -5,6 +5,7 @@ import StatsSection from "@/components/landing-page/stats";
 import TestimonialsSection from "@/components/landing-page/testimonials";
 import PricingSection from "@/components/landing-page/pricing";
 import FAQsSection from "@/components/landing-page/faqs";
+import FooterSection from "@/components/landing-page/footer";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <TestimonialsSection />
       <PricingSection />
       <FAQsSection />
+      <FooterSection />
     </>
   );
 }
