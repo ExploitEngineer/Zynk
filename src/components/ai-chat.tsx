@@ -1,5 +1,6 @@
 "use client";
 
+import type { ChatStatus } from "ai";
 import {
   Conversation,
   ConversationContent,
@@ -28,64 +29,137 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { Actions, Action } from "@/components/ai-elements/actions";
-import { Fragment } from "react";
 import { useState } from "react";
-import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
 import { GlobeIcon, RefreshCcwIcon, CopyIcon } from "lucide-react";
-import {
-  Source,
-  Sources,
-  SourcesContent,
-  SourcesTrigger,
-} from "@/components/ai-elements/sources";
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from "@/components/ai-elements/reasoning";
 import { Loader } from "@/components/ai-elements/loader";
 import { Separator } from "@/components/ui/separator";
 import { AIChatHeader } from "./ai-chat-header";
 
-const models = [
-  {
-    name: "GPT 4o",
-    value: "openai/gpt-4o",
-  },
-  {
-    name: "Deepseek R1",
-    value: "deepseek/deepseek-r1",
-  },
+type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  files?: File[];
+};
+
+interface Models {
+  name: string;
+  value: string;
+}
+
+const models: Models[] = [
+  { name: "GPT 4.1 Nano", value: "gpt-4.1-nano" },
+  { name: "GPT 4o", value: "gpt-4o" },
 ];
 
 const AIChat = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
-  const { messages, sendMessage, status, regenerate } = useChat();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [status, setStatus] = useState<ChatStatus>("ready");
 
-  const handleSubmit = (message: PromptInputMessage) => {
-    const hasText = Boolean(message.text);
-    const hasAttachments = Boolean(message.files?.length);
+  const pushMessage = (m: ChatMessage) => setMessages((prev) => [...prev, m]);
 
-    if (!(hasText || hasAttachments)) {
-      return;
-    }
+  const handleSubmit = async (message: PromptInputMessage) => {
+    const hasText = Boolean(message.text?.trim());
+    const hasFiles = Boolean(message.files && message.files.length > 0);
+    if (!(hasText || hasFiles)) return;
 
-    sendMessage(
-      {
-        text: message.text || "Sent with attachments",
-        files: message.files,
-      },
-      {
-        body: {
-          model: model,
-          webSearch: webSearch,
-        },
-      },
-    );
+    const uploadedFiles: File[] =
+      message.files?.map((file: any) => file.file as File) || [];
+
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      text: message.text || "Sent with attachments",
+      files: uploadedFiles,
+    };
+
+    pushMessage(userMessage);
     setInput("");
+    setStatus("submitted");
+
+    try {
+      const res = await fetch("/api/openai", {
+        method: "POST",
+        body: JSON.stringify({
+          messages: messages.concat(userMessage),
+          model,
+          webSearch,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(body || "API request failed");
+      }
+
+      const data = await res.json();
+      const assistantText: string = data?.text ?? "No response";
+
+      pushMessage({
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        text: assistantText,
+      });
+
+      setStatus("ready");
+    } catch (err) {
+      console.error("AI fetch error", err);
+      pushMessage({
+        id: `assistant-error-${Date.now()}`,
+        role: "assistant",
+        text: `Error: ${String(err ?? "Unknown")}`,
+      });
+      setStatus("error");
+    }
+  };
+
+  const regenerate = async () => {
+    const lastUser = [...messages].reverse().find((m) => m.role === "user");
+    if (!lastUser) return;
+
+    setStatus("submitted");
+
+    try {
+      const resp = await fetch("/api/openai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages,
+          model,
+          webSearch,
+        }),
+      });
+
+      if (!resp.ok) {
+        throw new Error((await resp.text()) || "API request failed");
+      }
+
+      const data = await resp.json();
+      const assistantText: string = data?.text ?? "No response";
+
+      pushMessage({
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        text: assistantText,
+      });
+
+      setStatus("ready");
+    } catch (err) {
+      console.error("Regenerate error:", err);
+      pushMessage({
+        id: `assistant-error-${Date.now()}`,
+        role: "assistant",
+        text: `Error: ${String(err)}`,
+      });
+      setStatus("error");
+    }
   };
 
   return (
@@ -98,82 +172,31 @@ const AIChat = () => {
             <ConversationContent>
               {messages.map((message) => (
                 <div key={message.id}>
+                  <Message from={message.role}>
+                    <MessageContent>
+                      <Response>{message.text}</Response>
+                    </MessageContent>
+                  </Message>
+
                   {message.role === "assistant" &&
-                    message.parts.filter((part) => part.type === "source-url")
-                      .length > 0 && (
-                      <Sources>
-                        <SourcesTrigger
-                          count={
-                            message.parts.filter(
-                              (part) => part.type === "source-url",
-                            ).length
+                    message.id === messages.at(-1)?.id && (
+                      <Actions className="mt-2">
+                        <Action onClick={regenerate} label="Retry">
+                          <RefreshCcwIcon className="size-3" />
+                        </Action>
+                        <Action
+                          onClick={() =>
+                            navigator.clipboard.writeText(message.text)
                           }
-                        />
-                        {message.parts
-                          .filter((part) => part.type === "source-url")
-                          .map((part, i) => (
-                            <SourcesContent key={`${message.id}-${i}`}>
-                              <Source
-                                key={`${message.id}-${i}`}
-                                href={part.url}
-                                title={part.url}
-                              />
-                            </SourcesContent>
-                          ))}
-                      </Sources>
+                          label="Copy"
+                        >
+                          <CopyIcon className="size-3" />
+                        </Action>
+                      </Actions>
                     )}
-                  {message.parts.map((part, i) => {
-                    switch (part.type) {
-                      case "text":
-                        return (
-                          <Fragment key={`${message.id}-${i}`}>
-                            <Message from={message.role}>
-                              <MessageContent>
-                                <Response>{part.text}</Response>
-                              </MessageContent>
-                            </Message>
-                            {message.role === "assistant" &&
-                              i === messages.length - 1 && (
-                                <Actions className="mt-2">
-                                  <Action
-                                    onClick={() => regenerate()}
-                                    label="Retry"
-                                  >
-                                    <RefreshCcwIcon className="size-3" />
-                                  </Action>
-                                  <Action
-                                    onClick={() =>
-                                      navigator.clipboard.writeText(part.text)
-                                    }
-                                    label="Copy"
-                                  >
-                                    <CopyIcon className="size-3" />
-                                  </Action>
-                                </Actions>
-                              )}
-                          </Fragment>
-                        );
-                      case "reasoning":
-                        return (
-                          <Reasoning
-                            key={`${message.id}-${i}`}
-                            className="w-full"
-                            isStreaming={
-                              status === "streaming" &&
-                              i === message.parts.length - 1 &&
-                              message.id === messages.at(-1)?.id
-                            }
-                          >
-                            <ReasoningTrigger />
-                            <ReasoningContent>{part.text}</ReasoningContent>
-                          </Reasoning>
-                        );
-                      default:
-                        return null;
-                    }
-                  })}
                 </div>
               ))}
+
               {status === "submitted" && <Loader />}
             </ConversationContent>
             <ConversationScrollButton />
@@ -194,6 +217,7 @@ const AIChat = () => {
                 value={input}
               />
             </PromptInputBody>
+
             <PromptInputToolbar>
               <PromptInputTools>
                 <PromptInputActionMenu>
@@ -202,35 +226,36 @@ const AIChat = () => {
                     <PromptInputActionAddAttachments />
                   </PromptInputActionMenuContent>
                 </PromptInputActionMenu>
+
                 <PromptInputButton
                   variant={webSearch ? "default" : "ghost"}
-                  onClick={() => setWebSearch(!webSearch)}
+                  onClick={() => setWebSearch((s) => !s)}
                 >
                   <GlobeIcon size={16} />
                   <span>Search</span>
                 </PromptInputButton>
+
                 <PromptInputModelSelect
-                  onValueChange={(value) => {
-                    setModel(value);
-                  }}
+                  onValueChange={(v) => setModel(v)}
                   value={model}
                 >
                   <PromptInputModelSelectTrigger>
                     <PromptInputModelSelectValue />
                   </PromptInputModelSelectTrigger>
                   <PromptInputModelSelectContent>
-                    {models.map((model) => (
-                      <PromptInputModelSelectItem
-                        key={model.value}
-                        value={model.value}
-                      >
-                        {model.name}
+                    {models.map((m) => (
+                      <PromptInputModelSelectItem key={m.value} value={m.value}>
+                        {m.name}
                       </PromptInputModelSelectItem>
                     ))}
                   </PromptInputModelSelectContent>
                 </PromptInputModelSelect>
               </PromptInputTools>
-              <PromptInputSubmit disabled={!input && !status} status={status} />
+
+              <PromptInputSubmit
+                disabled={!input && status === "ready"}
+                status={status}
+              />
             </PromptInputToolbar>
           </PromptInput>
         </div>
