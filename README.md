@@ -6,12 +6,12 @@ Zynk is an AI-powered chat platform built with **Next.js**, **TypeScript**, and 
 
 ## 🚀 Features
 
-- 🤖 **AI-Powered Chat** – Engage in intelligent real-time conversations
-- 🗂️ **Chat Management** – Create, view, and delete conversations easily
-- 🕒 **Persistent History** – Store and retrieve previous chats
-- 🔐 **Authentication** – Secure login, signup, and session management
-- 💳 **Pricing & Subscriptions** – Flexible plans for different users
-- 🎨 **Modern UI** – Powered by **shadcn/ui** and **Tailwind CSS**
+* 🤖 **AI-Powered Chat** – Engage in intelligent real-time conversations
+* 🗂️ **Chat Management** – Create, view, and delete conversations easily
+* 🕒 **Persistent History** – Store and retrieve previous chats
+* 🔐 **Authentication** – Secure login, signup, and session management
+* 💳 **Pricing & Subscriptions** – Flexible plans for different users
+* 🎨 **Modern UI** – Powered by **shadcn/ui** and **Tailwind CSS**
 
 ---
 
@@ -55,37 +55,17 @@ Now open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🧩 Architecture Overview
 
-```
-           ┌──────────────────┐
-           │   Next.js UI     │
-           │  (Frontend)      │
-           └────────┬─────────┘
-                    │
-                    ▼
-          ┌─────────────────────┐
-          │   API Layer         │
-          │  (Chat, Auth, etc.) │
-          └────────┬────────────┘
-                   │
-     ┌─────────────┴─────────────┐
-     │                           │
-     ▼                           ▼
-┌──────────────┐        ┌─────────────────┐
-│   AI Engine  │        │    MongoDB      │
-│ LLM / OpenAI │        │ Store chats,    │
-│  responses   │        │ users, pricing  │
-└──────────────┘        └─────────────────┘
+```mermaid
+flowchart TD
+    A[Next.js UI] --> B[API Layer]
+    B --> C[AI Engine]
+    B --> D[MongoDB]
+    B --> E[Authentication]
+    E --> F[Pricing & Plans]
 
-        ┌─────────────────────┐
-        │  Authentication     │
-        │  (JWT / Sessions)   │
-        └──────────┬──────────┘
-                   │
-        ┌──────────▼──────────┐
-        │   Pricing & Plans   │
-        │   (Stripe / APIs)   │
-        └─────────────────────┘
 ```
+
+This diagram represents the flow of data and services in Zynk.
 
 ---
 
@@ -113,4 +93,4 @@ For inquiries, reach out at **[abdulrafayofficial.work@gmail.com](mailto:abdulra
 
 ---
 
-Zynk – _Where AI Conversations Meet Simplicity & Power_ 🚀
+Zynk – *Where AI Conversations Meet Simplicity & Power* 🚀
