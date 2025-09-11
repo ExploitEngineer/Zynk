@@ -14,7 +14,7 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="bg-gray-50 py-16 md:py-32 dark:bg-transparent"
+      className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30"
     >
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl space-y-6 text-center">

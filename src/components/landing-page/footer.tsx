@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { Twitter, Linkedin, Facebook, Instagram, Twitch } from "lucide-react";
 
 interface LINKS {
   title: string;
@@ -35,11 +35,7 @@ const links: LINKS[] = [
 
 export default function FooterSection() {
   return (
-    <footer
-      id="footer"
-      className="bg-gray-50 py-16 md:py-32 dark:bg-transparent"
-    >
-      {" "}
+    <footer id="footer" className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30">
       <div className="mx-auto max-w-5xl px-6">
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           {links.map((link: LINKS, index: number) => (
@@ -60,7 +56,7 @@ export default function FooterSection() {
             aria-label="X/Twitter"
             className="text-muted-foreground hover:text-primary block"
           >
-            <Image src="/assets/images/x.svg" width={18} height={18} alt="x" />
+            <Twitter size={18} />
           </Link>
           <Link
             href="#"
@@ -69,12 +65,7 @@ export default function FooterSection() {
             aria-label="LinkedIn"
             className="text-muted-foreground hover:text-primary block"
           >
-            <Image
-              src="/assets/images/linkedin.svg"
-              width={18}
-              height={18}
-              alt="linkedin"
-            />
+            <Linkedin size={18} />
           </Link>
           <Link
             href="#"
@@ -83,12 +74,7 @@ export default function FooterSection() {
             aria-label="Facebook"
             className="text-muted-foreground hover:text-primary block"
           >
-            <Image
-              src="/assets/images/facebook.svg"
-              width={18}
-              height={18}
-              alt="linkedin"
-            />
+            <Facebook size={18} />
           </Link>
           <Link
             href="#"
@@ -97,12 +83,7 @@ export default function FooterSection() {
             aria-label="Instagram"
             className="text-muted-foreground hover:text-primary block"
           >
-            <Image
-              src="/assets/images/instagram.svg"
-              width={18}
-              height={18}
-              alt="linkedin"
-            />
+            <Instagram size={18} />
           </Link>
           <Link
             href="#"
@@ -111,12 +92,7 @@ export default function FooterSection() {
             aria-label="TikTok"
             className="text-muted-foreground hover:text-primary block"
           >
-            <Image
-              src="/assets/images/tiktok.svg"
-              width={18}
-              height={18}
-              alt="linkedin"
-            />
+            <Twitch size={18} />
           </Link>
         </div>
         <span className="text-muted-foreground block text-center text-sm">

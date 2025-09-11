@@ -6,7 +6,7 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="bg-gray-50 py-16 md:py-32 dark:bg-transparent"
+      className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30"
     >
       <div className="mx-auto max-w-5xl px-6">
         <div className="relative">
