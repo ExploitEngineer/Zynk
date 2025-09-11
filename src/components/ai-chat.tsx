@@ -31,7 +31,18 @@ import {
 import { Actions, Action } from "@/components/ai-elements/actions";
 import { useState } from "react";
 import { Response } from "@/components/ai-elements/response";
-import { GlobeIcon, RefreshCcwIcon, CopyIcon } from "lucide-react";
+import {
+  GlobeIcon,
+  RefreshCcwIcon,
+  CopyIcon,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Loader } from "@/components/ai-elements/loader";
 import { Separator } from "@/components/ui/separator";
 import { AIChatHeader } from "./ai-chat-header";
@@ -53,7 +64,7 @@ const models: Models[] = [
   { name: "GPT 4o", value: "gpt-4o" },
 ];
 
-const AIChat = (): Element => {
+const AIChat = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
@@ -171,7 +182,7 @@ const AIChat = (): Element => {
         <div className="flex flex-col h-full">
           <Conversation className="h-full">
             <ConversationContent>
-              {messages.map((message) => (
+              {messages.map((message: ChatMessage) => (
                 <div key={message.id}>
                   <Message from={message.role}>
                     <MessageContent>
@@ -181,18 +192,48 @@ const AIChat = (): Element => {
 
                   {message.role === "assistant" &&
                     message.id === messages.at(-1)?.id && (
-                      <Actions className="mt-2">
-                        <Action onClick={regenerate} label="Retry">
-                          <RefreshCcwIcon className="size-3" />
-                        </Action>
-                        <Action
-                          onClick={() =>
-                            navigator.clipboard.writeText(message.text)
-                          }
-                          label="Copy"
-                        >
-                          <CopyIcon className="size-3" />
-                        </Action>
+                      <Actions className="mt-1">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Action
+                              className="cursor-pointer"
+                              onClick={regenerate}
+                              label="Retry"
+                            >
+                              <RefreshCcwIcon className="size-4" />
+                            </Action>
+                          </TooltipTrigger>
+                          <TooltipContent>regenerate</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Action label="Like">
+                              <ThumbsUp className="size-4" />
+                            </Action>
+                          </TooltipTrigger>
+                          <TooltipContent>Like</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Action label="DisLike">
+                              <ThumbsDown className="size-4" />
+                            </Action>
+                          </TooltipTrigger>
+                          <TooltipContent>unlike</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Action
+                              onClick={(): Promise<void> =>
+                                navigator.clipboard.writeText(message.text)
+                              }
+                              label="Copy"
+                            >
+                              <CopyIcon className="size-4" />
+                            </Action>
+                          </TooltipTrigger>
+                          <TooltipContent>copy</TooltipContent>
+                        </Tooltip>
                       </Actions>
                     )}
                 </div>
