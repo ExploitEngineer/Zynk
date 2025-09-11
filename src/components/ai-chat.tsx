@@ -252,8 +252,8 @@ const AIChat = () => {
               {status === "submitted" && (
                 <TextShimmer
                   className="font-mono text-sm"
-                  duration={1}
-                  spread={3}
+                  duration={1.3}
+                  spread={2}
                 >
                   Thinking...
                 </TextShimmer>
