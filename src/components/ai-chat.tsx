@@ -28,6 +28,7 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
+import { Suggestions, Suggestion } from "./ai-elements/suggestion";
 import { Actions, Action } from "@/components/ai-elements/actions";
 import { useState } from "react";
 import { Response } from "@/components/ai-elements/response";
@@ -62,6 +63,12 @@ interface Models {
 const models: Models[] = [
   { name: "GPT 4.1 Nano", value: "gpt-4.1-nano" },
   { name: "GPT 4o", value: "gpt-4o" },
+];
+
+const suggestions: string[] = [
+  "Can you explain how to play tennis?",
+  "What is the weather in Tokyo?",
+  "How does machine learning work?",
 ];
 
 const AIChat = () => {
@@ -244,6 +251,11 @@ const AIChat = () => {
             <ConversationScrollButton />
           </Conversation>
 
+          <Suggestions>
+            {suggestions.map((suggestion) => (
+              <Suggestion key={suggestion} suggestion={suggestion} />
+            ))}
+          </Suggestions>
           <PromptInput
             onSubmit={handleSubmit}
             className="mt-4"
