@@ -53,22 +53,23 @@ const models: Models[] = [
   { name: "GPT 4o", value: "gpt-4o" },
 ];
 
-const AIChat = () => {
+const AIChat = (): Element => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<ChatStatus>("ready");
 
-  const pushMessage = (m: ChatMessage) => setMessages((prev) => [...prev, m]);
+  const pushMessage = (m: ChatMessage): void =>
+    setMessages((prev: ChatMessage[]): ChatMessage[] => [...prev, m]);
 
-  const handleSubmit = async (message: PromptInputMessage) => {
+  const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
     const hasText = Boolean(message.text?.trim());
     const hasFiles = Boolean(message.files && message.files.length > 0);
     if (!(hasText || hasFiles)) return;
 
     const uploadedFiles: File[] =
-      message.files?.map((file: any) => file.file as File) || [];
+      message.files?.map((file: any): File => file.file as File) || [];
 
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
