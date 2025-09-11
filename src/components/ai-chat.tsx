@@ -301,7 +301,7 @@ const AIChat = () => {
                   }
                 >
                   <GlobeIcon size={16} />
-                  <span>Search</span>
+                  <span className="hidden sm:block">Search</span>
                 </PromptInputButton>
 
                 <PromptInputModelSelect
