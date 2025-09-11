@@ -214,7 +214,7 @@ const AIChat = () => {
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Action label="Like">
+                            <Action className="cursor-pointer" label="Like">
                               <ThumbsUp className="size-4" />
                             </Action>
                           </TooltipTrigger>
@@ -222,7 +222,7 @@ const AIChat = () => {
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Action label="DisLike">
+                            <Action className="cursor-pointer" label="DisLike">
                               <ThumbsDown className="size-4" />
                             </Action>
                           </TooltipTrigger>
@@ -231,6 +231,7 @@ const AIChat = () => {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Action
+                              className="cursor-pointer"
                               onClick={(): Promise<void> =>
                                 navigator.clipboard.writeText(message.text)
                               }
