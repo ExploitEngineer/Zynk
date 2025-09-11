@@ -1,8 +1,13 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users } from "lucide-react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 export default function FeaturesSection() {
+  const { theme } = useTheme();
+
   return (
     <section
       id="features"
@@ -15,7 +20,7 @@ export default function FeaturesSection() {
               <CardContent className="relative m-auto size-fit pt-6">
                 <div className="relative flex h-24 w-56 items-center">
                   <Image
-                    src="/assets/images/100.svg"
+                    src={`/assets/images/${theme === "dark" ? "100-white.svg" : "100.svg"}`}
                     className="text-muted absolute inset-0 size-full"
                     width={50}
                     height={50}
@@ -34,7 +39,7 @@ export default function FeaturesSection() {
               <CardContent className="pt-6">
                 <div className="relative mx-auto flex aspect-square size-32 rounded-full border before:absolute before:-inset-2 before:rounded-full before:border dark:border-white/10 dark:before:border-white/5">
                   <Image
-                    src="/assets/images/finger.svg"
+                    src={`/assets/images/${theme === "dark" ? "finger-white.svg" : "finger.svg"}`}
                     className="m-auto h-fit w-24"
                     width={50}
                     height={50}
@@ -56,7 +61,7 @@ export default function FeaturesSection() {
               <CardContent className="pt-6">
                 <div className="pt-6 lg:px-6">
                   <Image
-                    src="/assets/images/light.svg"
+                    src={`/assets/images/${theme === "dark" ? "light-white.svg" : "light.svg"}`}
                     className="dark:text-muted-foreground w-full"
                     width={50}
                     height={50}
@@ -97,7 +102,7 @@ export default function FeaturesSection() {
                     <span className="block size-2 rounded-full border dark:border-white/10 dark:bg-white/10"></span>
                   </div>
                   <Image
-                    src="/assets/images/graph.svg"
+                    src={`/assets/images/${theme === "dark" ? "graph-white.svg" : "graph.svg"}`}
                     className="w-full sm:w-[150%]"
                     width={50}
                     height={50}
