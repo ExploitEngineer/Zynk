@@ -61,7 +61,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar className="font-code" collapsible="icon" {...props}>
       <SidebarHeader className="flex px-3 justify-between flex-row items-center">
         <h3
           className={cn(

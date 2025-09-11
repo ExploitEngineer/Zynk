@@ -184,7 +184,7 @@ const AIChat = () => {
   };
 
   return (
-    <section className="w-full h-screen overflow-y-hidden">
+    <section className="w-full h-screen overflow-y-hidden font-code">
       <AIChatHeader />
       <Separator />
       <div className="max-w-4xl mx-auto h-[94%] p-6">
