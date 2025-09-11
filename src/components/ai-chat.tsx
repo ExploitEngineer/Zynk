@@ -254,7 +254,7 @@ const AIChat = () => {
             <ConversationScrollButton />
           </Conversation>
 
-          <Suggestions>
+          <Suggestions className="w-full flex flex-wrap justify-center gap-2">
             {suggestions.map((suggestion: string) => (
               <Suggestion key={suggestion} suggestion={suggestion} />
             ))}
