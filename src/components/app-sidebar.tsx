@@ -16,6 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const data = {
   navMain: [
@@ -63,14 +64,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar className="font-code" collapsible="icon" {...props}>
       <SidebarHeader className="flex px-3 justify-between flex-row items-center">
-        <h3
-          className={cn(
-            "dark:text-primary text-black font-medium",
-            !open ? "hidden" : "block",
-          )}
-        >
-          Zynk
-        </h3>
+        <Link href="/">
+          <h3
+            className={cn(
+              "dark:text-primary text-black font-medium",
+              !open ? "hidden" : "block",
+            )}
+          >
+            Zynk
+          </h3>
+        </Link>
         <SidebarTrigger className="cursor-pointer" />
       </SidebarHeader>
       <SidebarContent>
