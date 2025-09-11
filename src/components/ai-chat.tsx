@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChatStatus } from "ai";
+import type { ChatStatus, FileUIPart } from "ai";
 import {
   Conversation,
   ConversationContent,
@@ -139,8 +139,10 @@ const AIChat = () => {
     }
   };
 
-  const regenerate = async () => {
-    const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  const regenerate = async (): Promise<void> => {
+    const lastUser = [...messages]
+      .reverse()
+      .find((m: ChatMessage): boolean => m.role === "user");
     if (!lastUser) return;
 
     setStatus("submitted");
@@ -253,7 +255,7 @@ const AIChat = () => {
           </Conversation>
 
           <Suggestions>
-            {suggestions.map((suggestion) => (
+            {suggestions.map((suggestion: string) => (
               <Suggestion key={suggestion} suggestion={suggestion} />
             ))}
           </Suggestions>
@@ -265,10 +267,12 @@ const AIChat = () => {
           >
             <PromptInputBody>
               <PromptInputAttachments>
-                {(attachment) => <PromptInputAttachment data={attachment} />}
+                {(attachment: FileUIPart & { id: string }) => (
+                  <PromptInputAttachment data={attachment} />
+                )}
               </PromptInputAttachments>
               <PromptInputTextarea
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e): void => setInput(e.target.value)}
                 value={input}
               />
             </PromptInputBody>
@@ -284,21 +288,23 @@ const AIChat = () => {
 
                 <PromptInputButton
                   variant={webSearch ? "default" : "ghost"}
-                  onClick={() => setWebSearch((s) => !s)}
+                  onClick={(): void =>
+                    setWebSearch((s: boolean): boolean => !s)
+                  }
                 >
                   <GlobeIcon size={16} />
                   <span>Search</span>
                 </PromptInputButton>
 
                 <PromptInputModelSelect
-                  onValueChange={(v) => setModel(v)}
+                  onValueChange={(v: string): void => setModel(v)}
                   value={model}
                 >
                   <PromptInputModelSelectTrigger>
                     <PromptInputModelSelectValue />
                   </PromptInputModelSelectTrigger>
                   <PromptInputModelSelectContent>
-                    {models.map((m) => (
+                    {models.map((m: Models) => (
                       <PromptInputModelSelectItem key={m.value} value={m.value}>
                         {m.name}
                       </PromptInputModelSelectItem>
