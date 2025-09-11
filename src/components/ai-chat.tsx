@@ -28,6 +28,7 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
+import { TextShimmer } from "@/components/ui/text-shimmer";
 import { Suggestions, Suggestion } from "./ai-elements/suggestion";
 import { Actions, Action } from "@/components/ai-elements/actions";
 import { useState } from "react";
@@ -44,7 +45,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Loader } from "@/components/ai-elements/loader";
 import { Separator } from "@/components/ui/separator";
 import { AIChatHeader } from "./ai-chat-header";
 
@@ -249,7 +249,15 @@ const AIChat = () => {
                 </div>
               ))}
 
-              {status === "submitted" && <Loader />}
+              {status === "submitted" && (
+                <TextShimmer
+                  className="font-mono text-sm"
+                  duration={1}
+                  spread={3}
+                >
+                  Thinking...
+                </TextShimmer>
+              )}
             </ConversationContent>
             <ConversationScrollButton />
           </Conversation>
