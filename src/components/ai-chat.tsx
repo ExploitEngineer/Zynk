@@ -1,12 +1,32 @@
 "use client";
 
-import type { ChatStatus, FileUIPart } from "ai";
+import { useState } from "react";
+import type { ChatMessage } from "@/types";
+import { AIChatHeader } from "./ai-chat-header";
+import type { FileUIPart } from "ai";
+import { Separator } from "@/components/ui/separator";
+import { TextShimmer } from "@/components/ui/text-shimmer";
+import { Response } from "@/components/ai-elements/response";
+import { Suggestions, Suggestion } from "./ai-elements/suggestion";
+import { Actions, Action } from "@/components/ai-elements/actions";
+import { Message, MessageContent } from "@/components/ai-elements/message";
+import {
+  GlobeIcon,
+  RefreshCcwIcon,
+  CopyIcon,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputActionAddAttachments,
@@ -28,32 +48,7 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import { TextShimmer } from "@/components/ui/text-shimmer";
-import { Suggestions, Suggestion } from "./ai-elements/suggestion";
-import { Actions, Action } from "@/components/ai-elements/actions";
-import { useState } from "react";
-import { Response } from "@/components/ai-elements/response";
-import {
-  GlobeIcon,
-  RefreshCcwIcon,
-  CopyIcon,
-  ThumbsUp,
-  ThumbsDown,
-} from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator";
-import { AIChatHeader } from "./ai-chat-header";
-
-type ChatMessage = {
-  id: string;
-  role: "user" | "assistant";
-  text: string;
-  files?: File[];
-};
+import { useChatStore } from "@/store/chat-store";
 
 interface Models {
   name: string;
@@ -72,131 +67,19 @@ const suggestions: string[] = [
 ];
 
 const AIChat = () => {
+  const { messages, status, sendMessage, regenerate } = useChatStore();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [status, setStatus] = useState<ChatStatus>("ready");
-
-  const pushMessage = (m: ChatMessage): void =>
-    setMessages((prev: ChatMessage[]): ChatMessage[] => [...prev, m]);
 
   const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
-    const hasText = Boolean(message.text?.trim());
-    const hasFiles = Boolean(message.files && message.files.length > 0);
-    if (!(hasText || hasFiles)) return;
-
-    const uploadedFiles: File[] =
-      message.files?.map((file: any): File => file.file as File) || [];
-
-    const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      text: message.text || "Sent with attachments",
-      files: uploadedFiles,
-    };
-
-    pushMessage(userMessage);
+    if (!message.text?.trim()) return;
+    await sendMessage(message.text, model);
     setInput("");
-    setStatus("submitted");
-
-    try {
-      const res = await fetch("/api/openai", {
-        method: "POST",
-        body: JSON.stringify({
-          messages: messages.concat(userMessage),
-          model,
-          webSearch,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        const body = await res.text();
-        throw new Error(body || "API request failed");
-      }
-
-      const assistantId = `assistant-${Date.now()}`;
-      pushMessage({
-        id: assistantId,
-        role: "assistant",
-        text: "",
-      });
-      const reader = res.body?.getReader();
-      const decoder = new TextDecoder();
-      let accumulated = "";
-
-      while (true) {
-        const { value, done } = await reader!.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        accumulated += chunk;
-
-        setMessages((prev: ChatMessage[]): ChatMessage[] =>
-          prev.map(
-            (m: ChatMessage): ChatMessage =>
-              m.id === assistantId ? { ...m, text: accumulated } : m,
-          ),
-        );
-      }
-
-      setStatus("ready");
-    } catch (err) {
-      console.error("AI fetch error", err);
-      pushMessage({
-        id: `assistant-error-${Date.now()}`,
-        role: "assistant",
-        text: `Error: ${String(err ?? "Unknown")}`,
-      });
-      setStatus("error");
-    }
   };
 
-  const regenerate = async (): Promise<void> => {
-    const lastUser = [...messages]
-      .reverse()
-      .find((m: ChatMessage): boolean => m.role === "user");
-    if (!lastUser) return;
-
-    setStatus("submitted");
-
-    try {
-      const resp = await fetch("/api/openai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages,
-          model,
-          webSearch,
-        }),
-      });
-
-      if (!resp.ok) {
-        throw new Error((await resp.text()) || "API request failed");
-      }
-
-      const data = await resp.json();
-      const assistantText: string = data?.text ?? "No response";
-
-      pushMessage({
-        id: `assistant-${Date.now()}`,
-        role: "assistant",
-        text: assistantText,
-      });
-
-      setStatus("ready");
-    } catch (err) {
-      console.error("Regenerate error:", err);
-      pushMessage({
-        id: `assistant-error-${Date.now()}`,
-        role: "assistant",
-        text: `Error: ${String(err)}`,
-      });
-      setStatus("error");
-    }
+  const handleRegenerate = async (): Promise<void> => {
+    await regenerate(model);
   };
 
   return (
@@ -222,7 +105,7 @@ const AIChat = () => {
                           <TooltipTrigger asChild>
                             <Action
                               className="cursor-pointer"
-                              onClick={regenerate}
+                              onClick={handleRegenerate}
                               label="Retry"
                             >
                               <RefreshCcwIcon className="size-4" />
@@ -278,7 +161,7 @@ const AIChat = () => {
             <ConversationScrollButton />
           </Conversation>
 
-          <Suggestions className="w-full flex flex-wrap justify-center gap-2">
+          <Suggestions className="w-full flex flex-wrap justify-center gap-2 pt-3">
             {suggestions.map((suggestion: string) => (
               <Suggestion key={suggestion} suggestion={suggestion} />
             ))}

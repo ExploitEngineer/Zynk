@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Search, Home, MessageSquarePlus } from "lucide-react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
@@ -17,53 +16,27 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import type { User, Chat } from "@/types";
+import { useChatStore } from "@/store/chat-store";
 
-const data = {
-  navMain: [
-    {
-      title: "New chat",
-      url: "#",
-      icon: MessageSquarePlus,
-    },
-    {
-      title: "Search chats",
-      url: "#",
-      icon: Search,
-    },
-    {
-      title: "Library",
-      url: "#",
-      icon: Home,
-      isActive: true,
-    },
-  ],
-  chats: [
-    {
-      name: "Design Engineering",
-      url: "#",
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-    },
-    {
-      name: "Travel",
-      url: "#",
-    },
-  ],
-  user: {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { open } = useSidebar();
+  const { chats, fetchChats } = useChatStore();
+
+  React.useEffect((): void => {
+    fetchChats();
+  }, [fetchChats]);
+
+  const user: User = {
     name: "shadcn",
     plan: "Free" as UserPlan,
     avatar: "/avatars/shadcn.jpg",
     email: "abdulrafayofficial.work@gmail.com",
-  },
-};
+  };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { open } = useSidebar();
   return (
     <Sidebar className="font-code" collapsible="icon" {...props}>
-      <SidebarHeader className="flex px-3 justify-between gap-0 flex-row items-center">
+      <SidebarHeader className="flex justify-between gap-0 flex-row items-center">
         <Link href="/">
           <h3
             className={cn(
@@ -74,15 +47,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             Zynk
           </h3>
         </Link>
-        <SidebarTrigger className="cursor-pointer" />
+        <SidebarTrigger className="cursor-pointer me-[1px]" />
       </SidebarHeader>
+
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.chats} />
+        <NavMain />
+        <NavProjects
+          projects={chats.map((c: Chat) => ({
+            id: c._id,
+            name: c.title,
+            url: `/chat/${c._id}`,
+          }))}
+        />
       </SidebarContent>
+
       <Separator />
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

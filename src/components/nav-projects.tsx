@@ -1,7 +1,6 @@
 "use client";
 
 import { FilePen, MoreHorizontal, Trash2 } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavProjects({
   projects,
@@ -34,11 +34,11 @@ export function NavProjects({
       <SidebarGroupLabel className="text-md mb-2">chats</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.url}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <Link href={item.url}>
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
