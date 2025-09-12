@@ -1,33 +1,38 @@
 import OpenAI from "openai";
-
-interface Message {
-  role: "user" | "assistant";
-  text?: string;
-  files?: File[];
-}
+import { dbConnect } from "@/lib/db-connection";
+import Message from "@/models/message.model";
+import Chat from "@/models/chat.model";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-export async function POST(req: Request) {
-  const { messages = [], model = "gpt-4.1-nano" } = await req.json();
+export async function POST(req: Request): Promise<Response> {
+  await dbConnect();
+  const { chatId, text, model = "gpt-4.1-nano" } = await req.json();
 
-  const input = messages.map(
-    (m: Message): { role: string; content: string } => {
-      return {
-        role: m.role,
-        content: m.text || "",
-      };
-    },
-  );
+  const chat = await Chat.findById(chatId);
+  if (!chat) {
+    return new Response("Chat not found", { status: 404 });
+  }
+
+  const userMessage = await Message.create({
+    role: "user",
+    text,
+    chatId,
+  });
+  chat.messages.push(userMessage._id);
 
   const response = await openai.responses.create({
     model,
     instructions: "You are a helpful assistant.",
-    input,
+    input: text,
+    previous_response_id: chat.lastResponseId || undefined,
     stream: true,
   });
+
+  let assistantText = "";
+  let newResponseId: string | null = null;
 
   const stream = new ReadableStream({
     async start(controller: ReadableStreamDefaultController): Promise<void> {
@@ -35,10 +40,26 @@ export async function POST(req: Request) {
         for await (const event of response) {
           if (event.type === "response.output_text.delta") {
             controller.enqueue(event.delta);
+            assistantText += event.delta;
           }
           if (event.type === "response.completed") {
+            newResponseId = event.response.id;
             controller.close();
           }
+        }
+
+        const assistantMessage = await Message.create({
+          role: "assistant",
+          text: assistantText,
+          chatId,
+        });
+        chat.messages.push(assistantMessage._id);
+
+        if (newResponseId) {
+          chat.lastResponseId = newResponseId;
+          await chat.save();
+        } else {
+          await chat.save();
         }
       } catch (err) {
         controller.error(err);
