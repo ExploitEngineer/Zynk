@@ -37,7 +37,7 @@ const data = {
       isActive: true,
     },
   ],
-  projects: [
+  chats: [
     {
       name: "Design Engineering",
       url: "#",
@@ -63,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   return (
     <Sidebar className="font-code" collapsible="icon" {...props}>
-      <SidebarHeader className="flex px-3 justify-between flex-row items-center">
+      <SidebarHeader className="flex px-3 justify-between gap-0 flex-row items-center">
         <Link href="/">
           <h3
             className={cn(
@@ -78,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects projects={data.chats} />
       </SidebarContent>
       <Separator />
       <SidebarFooter>
