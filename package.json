@@ -39,13 +39,16 @@
         "openai": "^5.20.1",
         "react": "19.1.0",
         "react-dom": "19.1.0",
+        "react-hot-toast": "^2.6.0",
         "react-syntax-highlighter": "^15.6.6",
         "react-use-measure": "^2.1.7",
+        "shiki": "^3.12.2",
         "streamdown": "^1.2.0",
         "tailwind-merge": "^3.3.1",
         "tokenlens": "^1.1.2",
         "use-stick-to-bottom": "^1.1.1",
-        "zod": "^4.1.5"
+        "zod": "^4.1.5",
+        "zustand": "^5.0.8"
     },
     "devDependencies": {
         "@biomejs/biome": "2.2.0",
