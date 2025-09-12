@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import { NextResponse } from "next/server";
 
 interface Message {
   role: "user" | "assistant";
@@ -12,30 +11,44 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  try {
-    const { messages = [], model = "gpt-4.1-nano" } = await req.json();
+  const { messages = [], model = "gpt-4.1-nano" } = await req.json();
 
-    const input = messages.map((m: Message) => {
+  const input = messages.map(
+    (m: Message): { role: string; content: string } => {
       return {
         role: m.role,
         content: m.text || "",
       };
-    });
+    },
+  );
 
-    const response = await openai.responses.create({
-      model,
-      input,
-    });
+  const response = await openai.responses.create({
+    model,
+    instructions: "You are a helpful assistant.",
+    input,
+    stream: true,
+  });
 
-    return NextResponse.json({
-      text: response.output_text ?? "",
-    });
-  } catch (err: any) {
-    console.error("OpenAI API Error:", err);
+  const stream = new ReadableStream({
+    async start(controller: ReadableStreamDefaultController): Promise<void> {
+      try {
+        for await (const event of response) {
+          if (event.type === "response.output_text.delta") {
+            controller.enqueue(event.delta);
+          }
+          if (event.type === "response.completed") {
+            controller.close();
+          }
+        }
+      } catch (err) {
+        controller.error(err);
+      }
+    },
+  });
 
-    return NextResponse.json(
-      { error: err?.message ?? "Something went wrong" },
-      { status: 500 },
-    );
-  }
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+    },
+  });
 }

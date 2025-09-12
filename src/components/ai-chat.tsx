@@ -118,14 +118,30 @@ const AIChat = () => {
         throw new Error(body || "API request failed");
       }
 
-      const data = await res.json();
-      const assistantText: string = data?.text ?? "No response";
-
+      const assistantId = `assistant-${Date.now()}`;
       pushMessage({
-        id: `assistant-${Date.now()}`,
+        id: assistantId,
         role: "assistant",
-        text: assistantText,
+        text: "",
       });
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = "";
+
+      while (true) {
+        const { value, done } = await reader!.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        accumulated += chunk;
+
+        setMessages((prev: ChatMessage[]): ChatMessage[] =>
+          prev.map(
+            (m: ChatMessage): ChatMessage =>
+              m.id === assistantId ? { ...m, text: accumulated } : m,
+          ),
+        );
+      }
 
       setStatus("ready");
     } catch (err) {
