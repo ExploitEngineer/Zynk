@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import {
-  Geist,
-  Geist_Mono,
-  Montserrat,
-  Source_Code_Pro,
-} from "next/font/google";
+import { Geist, Geist_Mono, Montserrat, Inter } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,8 +19,8 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 
-const codeFont = Source_Code_Pro({
-  variable: "--font-code",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -42,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${codeFont.variable} ${montserrat.className} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${montserrat.className} antialiased`}
       >
         <ThemeProvider
           attribute="class"

@@ -184,7 +184,7 @@ const AIChat = () => {
   };
 
   return (
-    <section className="w-full h-screen overflow-y-hidden font-code">
+    <section className="w-full h-screen overflow-y-hidden font-inter">
       <AIChatHeader />
       <Separator />
       <div className="max-w-4xl mx-auto h-[94%] p-6">
@@ -288,7 +288,7 @@ const AIChat = () => {
             <PromptInputToolbar>
               <PromptInputTools>
                 <PromptInputActionMenu>
-                  <PromptInputActionMenuTrigger />
+                  <PromptInputActionMenuTrigger className="cursor-pointer" />
                   <PromptInputActionMenuContent>
                     <PromptInputActionAddAttachments />
                   </PromptInputActionMenuContent>
@@ -299,6 +299,7 @@ const AIChat = () => {
                   onClick={(): void =>
                     setWebSearch((s: boolean): boolean => !s)
                   }
+                  className="cursor-pointer"
                 >
                   <GlobeIcon size={16} />
                   <span className="hidden sm:block">Search</span>
@@ -308,12 +309,16 @@ const AIChat = () => {
                   onValueChange={(v: string): void => setModel(v)}
                   value={model}
                 >
-                  <PromptInputModelSelectTrigger>
+                  <PromptInputModelSelectTrigger className="cursor-pointer">
                     <PromptInputModelSelectValue />
                   </PromptInputModelSelectTrigger>
                   <PromptInputModelSelectContent>
                     {models.map((m: Models) => (
-                      <PromptInputModelSelectItem key={m.value} value={m.value}>
+                      <PromptInputModelSelectItem
+                        className="cursor-pointer"
+                        key={m.value}
+                        value={m.value}
+                      >
                         {m.name}
                       </PromptInputModelSelectItem>
                     ))}
