@@ -1,6 +1,6 @@
 export default function StatsSection() {
   return (
-    <section id="stats" className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30">
+    <section id="stats" className="dark:bg-muted/30 bg-gray-50 py-16 md:py-32">
       <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
         <div className="relative z-10 mx-auto max-w-xl space-y-6 text-center">
           <h2 className="text-4xl font-medium lg:text-5xl">

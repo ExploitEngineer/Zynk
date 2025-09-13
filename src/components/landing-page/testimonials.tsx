@@ -95,7 +95,7 @@ export default function TestimonialsSection() {
           </Card>
 
           {/* Testimonial 3 */}
-          <Card className="lg:col-span-1 md:col-span-2">
+          <Card className="md:col-span-2 lg:col-span-1">
             <CardContent className="h-full pt-6">
               <blockquote className="grid h-full grid-rows-[1fr_auto] gap-6">
                 <p>
@@ -103,7 +103,7 @@ export default function TestimonialsSection() {
                   for powering next-gen AI applications."
                 </p>
 
-                <div className="grid items-center gap-3 [grid-template-columns:auto_1fr]">
+                <div className="grid [grid-template-columns:auto_1fr] items-center gap-3">
                   <Avatar className="size-12">
                     <AvatarImage
                       src="https://tailus.io/images/reviews/yucel.webp"
@@ -126,7 +126,7 @@ export default function TestimonialsSection() {
           </Card>
 
           {/* Testimonial 4 */}
-          <Card className="card lg:col-span-1 variant-mixed md:col-span-2">
+          <Card className="card variant-mixed md:col-span-2 lg:col-span-1">
             <CardContent className="h-full pt-6">
               <blockquote className="grid h-full grid-rows-[1fr_auto] gap-6">
                 <p>

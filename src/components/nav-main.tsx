@@ -38,7 +38,7 @@ export function NavMain() {
           onClick={(): Promise<void> => createChat(title)}
         >
           <SidebarMenuButton
-            className="!cursor-pointer flex items-center"
+            className="flex !cursor-pointer items-center"
             tooltip="new chat"
           >
             <MessageSquarePlus />
@@ -52,7 +52,7 @@ export function NavMain() {
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
                 autoFocus
-                className="border-0 outline-0 focus:ring-0 rounded px-1 ml-2 text-sm"
+                className="ml-2 rounded border-0 px-1 text-sm outline-0 focus:ring-0"
               />
             ) : (
               <span className="ml-2">{title}</span>

@@ -11,7 +11,7 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30"
+      className="dark:bg-muted/30 bg-gray-50 py-16 md:py-32"
     >
       <div className="mx-auto max-w-5xl px-6">
         <div className="relative">
@@ -95,8 +95,8 @@ export default function FeaturesSection() {
                     </p>
                   </div>
                 </div>
-                <div className="rounded-tl-(--radius) relative -mb-6 -mr-6 mt-6 h-fit border-l border-t p-6 py-6 sm:ml-6">
-                  <div className="absolute left-3 top-2 flex gap-1">
+                <div className="relative mt-6 -mr-6 -mb-6 h-fit rounded-tl-(--radius) border-t border-l p-6 py-6 sm:ml-6">
+                  <div className="absolute top-2 left-3 flex gap-1">
                     <span className="block size-2 rounded-full border dark:border-white/10 dark:bg-white/10"></span>
                     <span className="block size-2 rounded-full border dark:border-white/10 dark:bg-white/10"></span>
                     <span className="block size-2 rounded-full border dark:border-white/10 dark:bg-white/10"></span>
@@ -127,13 +127,13 @@ export default function FeaturesSection() {
                     </p>
                   </div>
                 </div>
-                <div className="before:bg-(--color-border) relative mt-6 before:absolute before:inset-0 before:mx-auto before:w-px sm:-my-6 sm:-mr-6">
+                <div className="relative mt-6 before:absolute before:inset-0 before:mx-auto before:w-px before:bg-(--color-border) sm:-my-6 sm:-mr-6">
                   <div className="relative flex h-full flex-col justify-center space-y-6 py-6">
                     <div className="relative flex w-[calc(50%+0.875rem)] items-center justify-end gap-2">
                       <span className="block h-fit rounded border px-2 py-1 text-xs shadow-sm">
                         Likeur
                       </span>
-                      <div className="relative ring-background size-7 ring-4">
+                      <div className="ring-background relative size-7 ring-4">
                         <Image
                           className="size-full rounded-full"
                           fill
@@ -143,7 +143,7 @@ export default function FeaturesSection() {
                       </div>
                     </div>
                     <div className="relative ml-[calc(50%-1rem)] flex items-center gap-2">
-                      <div className="relative ring-background size-8 ring-4">
+                      <div className="ring-background relative size-8 ring-4">
                         <Image
                           className="size-full rounded-full"
                           fill
@@ -159,7 +159,7 @@ export default function FeaturesSection() {
                       <span className="block h-fit rounded border px-2 py-1 text-xs shadow-sm">
                         B. Ng
                       </span>
-                      <div className="relative ring-background size-7 ring-4">
+                      <div className="ring-background relative size-7 ring-4">
                         <Image
                           className="size-full rounded-full"
                           fill

@@ -14,7 +14,7 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30"
+      className="dark:bg-muted/30 bg-gray-50 py-16 md:py-32"
     >
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl space-y-6 text-center">
@@ -38,7 +38,7 @@ export default function PricingSection() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4 mb-8">
+            <CardContent className="mb-8 space-y-4">
               <hr className="border-dashed" />
 
               <ul className="list-outside space-y-3 text-sm">
@@ -64,7 +64,7 @@ export default function PricingSection() {
           </Card>
 
           <Card className="relative">
-            <span className="bg-linear-to-br/increasing absolute inset-x-0 -top-3 mx-auto flex h-6 w-fit items-center rounded-full from-purple-400 to-amber-300 px-3 py-1 text-xs font-medium text-amber-950 ring-1 ring-inset ring-white/20 ring-offset-1 ring-offset-gray-950/5">
+            <span className="absolute inset-x-0 -top-3 mx-auto flex h-6 w-fit items-center rounded-full bg-linear-to-br/increasing from-purple-400 to-amber-300 px-3 py-1 text-xs font-medium text-amber-950 ring-1 ring-white/20 ring-offset-1 ring-offset-gray-950/5 ring-inset">
               Popular
             </span>
 
@@ -79,7 +79,7 @@ export default function PricingSection() {
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-4 mb-8">
+              <CardContent className="mb-8 space-y-4">
                 <hr className="border-dashed" />
                 <ul className="list-outside space-y-3 text-sm">
                   {[
@@ -119,7 +119,7 @@ export default function PricingSection() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4 mb-8">
+            <CardContent className="mb-8 space-y-4">
               <hr className="border-dashed" />
 
               <ul className="list-outside space-y-3 text-sm">

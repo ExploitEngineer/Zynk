@@ -36,18 +36,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar className="font-code" collapsible="icon" {...props}>
-      <SidebarHeader className="flex justify-between gap-0 flex-row items-center">
+      <SidebarHeader className="flex flex-row items-center justify-between gap-0">
         <Link href="/">
           <h3
             className={cn(
-              "dark:text-primary text-black font-medium",
+              "dark:text-primary font-medium text-black",
               !open ? "hidden" : "block",
             )}
           >
             Zynk
           </h3>
         </Link>
-        <SidebarTrigger className="cursor-pointer me-[1px]" />
+        <SidebarTrigger className="me-[1px] cursor-pointer" />
       </SidebarHeader>
 
       <SidebarContent>

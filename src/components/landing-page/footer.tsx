@@ -35,7 +35,7 @@ const links: LINKS[] = [
 
 export default function FooterSection() {
   return (
-    <footer id="footer" className="bg-gray-50 py-16 md:py-32 dark:bg-muted/30">
+    <footer id="footer" className="dark:bg-muted/30 bg-gray-50 py-16 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           {links.map((link: LINKS, index: number) => (

@@ -9,7 +9,7 @@ import FooterSection from "@/components/landing-page/footer";
 
 export default function Home() {
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="flex h-full w-full flex-col">
       <HeroSection />
       <FeaturesSection />
       <ContentSection />

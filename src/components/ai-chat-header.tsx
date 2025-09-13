@@ -18,10 +18,10 @@ import {
 
 export function AIChatHeader() {
   return (
-    <div className="flex items-center justify-between py-2 z-10 top-0 w-full h-[6%]">
+    <div className="top-0 z-10 flex h-[6%] w-full items-center justify-between py-2">
       <DropdownMenu>
         <DropdownMenuTrigger className="ps-2">
-          <div className="hover:bg-accent flex items-center gap-2 justify-between rounded-lg cursor-pointer transition-all duration-300 py-2 px-4">
+          <div className="hover:bg-accent flex cursor-pointer items-center justify-between gap-2 rounded-lg px-4 py-2 transition-all duration-300">
             <h1 className="font-medium">Zynk AI</h1>
             <ChevronDown className="mt-1" size={15} />
           </div>
@@ -50,7 +50,7 @@ export function AIChatHeader() {
 
       <DropdownMenu>
         <DropdownMenuTrigger className="pe-2">
-          <div className="hover:bg-accent flex items-center gap-2 justify-between rounded-lg cursor-pointer transition-all duration-300 py-2 px-3">
+          <div className="hover:bg-accent flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2 transition-all duration-300">
             <Ellipsis size={19} />
           </div>
         </DropdownMenuTrigger>

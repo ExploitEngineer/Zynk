@@ -6,10 +6,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen w-full bg-black relative">
+    <div className="relative min-h-screen w-full bg-black">
       <Navbar />
       <div
-        className="absolute inset-0 z-0 dark:block hidden"
+        className="absolute inset-0 z-0 hidden dark:block"
         style={{
           backgroundImage: `
           radial-gradient(circle at 50% 100%, rgba(88, 28, 135, 0.6) 0%, transparent 60%),
@@ -20,7 +20,7 @@ export default function AuthLayout({
       />
 
       <div
-        className="absolute inset-0 z-0 dark:hidden block"
+        className="absolute inset-0 z-0 block dark:hidden"
         style={{
           backgroundImage: `
         radial-gradient(125% 125% at 50% 10%, #ffffff 40%, #10b981 100%)
@@ -28,7 +28,7 @@ export default function AuthLayout({
           backgroundSize: "100% 100%",
         }}
       />
-      <div className="w-full h-full relative">{children}</div>
+      <div className="relative h-full w-full">{children}</div>
     </div>
   );
 }

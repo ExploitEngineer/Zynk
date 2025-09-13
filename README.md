@@ -6,12 +6,12 @@ Zynk is an AI-powered chat platform built with **Next.js**, **TypeScript**, and 
 
 ## 🚀 Features
 
-* 🤖 **AI-Powered Chat** – Engage in intelligent real-time conversations
-* 🗂️ **Chat Management** – Create, view, and delete conversations easily
-* 🕒 **Persistent History** – Store and retrieve previous chats
-* 🔐 **Authentication** – Secure login, signup, and session management
-* 💳 **Pricing & Subscriptions** – Flexible plans for different users
-* 🎨 **Modern UI** – Powered by **shadcn/ui** and **Tailwind CSS**
+- 🤖 **AI-Powered Chat** – Engage in intelligent real-time conversations
+- 🗂️ **Chat Management** – Create, view, and delete conversations easily
+- 🕒 **Persistent History** – Store and retrieve previous chats
+- 🔐 **Authentication** – Secure login, signup, and session management
+- 💳 **Pricing & Subscriptions** – Flexible plans for different users
+- 🎨 **Modern UI** – Powered by **shadcn/ui** and **Tailwind CSS**
 
 ---
 
@@ -93,4 +93,4 @@ For inquiries, reach out at **[abdulrafayofficial.work@gmail.com](mailto:abdulra
 
 ---
 
-Zynk – *Where AI Conversations Meet Simplicity & Power* 🚀
+Zynk – _Where AI Conversations Meet Simplicity & Power_ 🚀

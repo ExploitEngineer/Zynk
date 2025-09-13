@@ -7,7 +7,7 @@ export default function ContentSection() {
   return (
     <section id="content" className="py-16 md:py-32">
       <div className="relative mx-auto max-w-5xl space-y-8 px-6 md:space-y-12">
-        <div className="relative w-full h-[500px]">
+        <div className="relative h-[500px] w-full">
           <Image
             className="rounded-(--radius) grayscale"
             src="/assets/images/content.avif"

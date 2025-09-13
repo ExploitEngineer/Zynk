@@ -5,11 +5,11 @@ import Link from "next/link";
 
 export default function ForgotPasswordComponent() {
   return (
-    <section className="flex min-h-screen px-4 py-16 md:py-32 bg-transparent">
-      <form className="bg-muted m-auto h-fit w-full lg:max-w-md max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 dark:[--color-muted:var(--color-zinc-900)]">
+    <section className="flex min-h-screen bg-transparent px-4 py-16 md:py-32">
+      <form className="bg-muted m-auto h-fit w-full max-w-sm overflow-hidden rounded-[calc(var(--radius)+.125rem)] border shadow-md shadow-zinc-950/5 lg:max-w-md dark:[--color-muted:var(--color-zinc-900)]">
         <div className="bg-card -m-px rounded-[calc(var(--radius)+.125rem)] border p-8 pb-6">
           <div>
-            <h1 className="mb-1 mt-4 text-xl font-semibold">
+            <h1 className="mt-4 mb-1 text-xl font-semibold">
               Recover Password
             </h1>
             <p className="text-sm">Enter your email to receive a reset link</p>

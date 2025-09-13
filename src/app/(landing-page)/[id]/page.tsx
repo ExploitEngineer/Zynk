@@ -29,7 +29,7 @@ export default function LandingPageRoute({
   return (
     <>
       <Navbar />
-      <div className="w-full bg-transparent min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen w-full items-center justify-center bg-transparent">
         {SelectedSection}
       </div>
     </>

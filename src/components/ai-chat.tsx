@@ -83,11 +83,11 @@ const AIChat = () => {
   };
 
   return (
-    <section className="w-full h-screen overflow-y-hidden font-inter">
+    <section className="font-inter h-screen w-full overflow-y-hidden">
       <AIChatHeader />
       <Separator />
-      <div className="max-w-4xl mx-auto h-[94%] p-6">
-        <div className="flex flex-col h-full">
+      <div className="mx-auto h-[94%] max-w-4xl p-6">
+        <div className="flex h-full flex-col">
           <Conversation className="h-full">
             <ConversationContent>
               {messages.map((message: ChatMessage) => (
@@ -161,7 +161,7 @@ const AIChat = () => {
             <ConversationScrollButton />
           </Conversation>
 
-          <Suggestions className="w-full flex flex-wrap justify-center gap-2 pt-3">
+          <Suggestions className="flex w-full flex-wrap justify-center gap-2 pt-3">
             {suggestions.map((suggestion: string) => (
               <Suggestion key={suggestion} suggestion={suggestion} />
             ))}
