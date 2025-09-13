@@ -7,7 +7,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Input } from "@/components/ui/input";
 import { useChatStore } from "@/store/chat-store";
 import { ChangeEvent, useState } from "react";
 
@@ -40,7 +39,7 @@ export function NavMain() {
           >
             <MessageSquarePlus />
             {isEditing ? (
-              <Input
+              <input
                 type="text"
                 value={title}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -48,7 +47,7 @@ export function NavMain() {
                 }
                 onKeyDown={handleKeyDown}
                 autoFocus
-                className="ml-2 rounded border-0 px-1 text-sm outline-0 focus:ring-0"
+                className="rounded border-0 bg-transparent px-1 text-sm outline-0 focus:ring-0"
               />
             ) : (
               <span className="ml-2">{title}</span>
