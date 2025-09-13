@@ -86,10 +86,10 @@ const AIChat = () => {
     <section className="font-inter h-screen w-full overflow-hidden">
       <AIChatHeader />
       <Separator />
-      <div className="mx-auto h-[94%] max-w-4xl p-6">
+      <div className="mx-auto h-[94%] p-6">
         <div className="flex h-full flex-col">
-          <Conversation id="conversation" className="h-full bg-red-500">
-            <ConversationContent className="bg-green-500">
+          <Conversation id="conversation" className="h-full">
+            <ConversationContent>
               {messages.map((message: ChatMessage) => (
                 <div key={message.id}>
                   <Message from={message.role}>
