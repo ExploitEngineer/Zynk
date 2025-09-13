@@ -25,7 +25,8 @@ export async function POST(req: Request): Promise<Response> {
 
   const response = await openai.responses.create({
     model,
-    instructions: "You are a helpful assistant.",
+    instructions:
+      "You are a helpful assistant.Always format your answers in **Markdown**. Use proper Markdown syntax for bullet points (-), numbered lists (1.), code blocks, tables, and links when needed.",
     input: text,
     previous_response_id: chat.lastResponseId || undefined,
     stream: true,
@@ -48,11 +49,14 @@ export async function POST(req: Request): Promise<Response> {
           }
         }
 
+        console.log("Assistant Text:", assistantText);
+
         const assistantMessage = await Message.create({
           role: "assistant",
           text: assistantText,
           chatId,
         });
+
         chat.messages.push(assistantMessage._id);
 
         if (newResponseId) {
