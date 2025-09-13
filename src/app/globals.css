@@ -121,3 +121,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* hide scrollbar on the first child of Conversation */
+#conversation > div {
+  overflow-y: auto; /* keep scrolling */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+#conversation > div::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

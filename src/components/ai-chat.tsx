@@ -83,13 +83,13 @@ const AIChat = () => {
   };
 
   return (
-    <section className="font-inter h-screen w-full overflow-y-hidden">
+    <section className="font-inter h-screen w-full overflow-hidden">
       <AIChatHeader />
       <Separator />
       <div className="mx-auto h-[94%] max-w-4xl p-6">
         <div className="flex h-full flex-col">
-          <Conversation className="h-full">
-            <ConversationContent>
+          <Conversation id="conversation" className="h-full bg-red-500">
+            <ConversationContent className="bg-green-500">
               {messages.map((message: ChatMessage) => (
                 <div key={message.id}>
                   <Message from={message.role}>
