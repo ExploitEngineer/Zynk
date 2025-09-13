@@ -9,9 +9,12 @@ interface ChatStore {
   currentChatId: string | null;
   messages: ChatMessage[];
   status: ChatStatus;
+  renamingChatId: string | null;
 
   fetchChats: () => Promise<void>;
   createChat: (title: string) => Promise<void>;
+  setRenamingChatId: (chatId: string | null) => void;
+  renameChat: (chatId: string, newTitle: string) => Promise<void>;
   setCurrentChat: (chatId: string) => Promise<void>;
   sendMessage: (text: string, model?: string) => Promise<void>;
   regenerate: (model?: string) => Promise<void>;
@@ -22,6 +25,8 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   currentChatId: null,
   messages: [],
   status: "ready",
+  renamingChatId: null,
+  isRenamingChat: false,
 
   fetchChats: async () => {
     try {
@@ -69,6 +74,37 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     } catch (err) {
       console.error("createChat error", err);
       toast.error("Failed to create chat");
+    }
+  },
+
+  setRenamingChatId: (chatId) => {
+    set({ renamingChatId: chatId });
+  },
+
+  renameChat: async (chatId, newTitle) => {
+    const cleanChatId = chatId.split("/").pop();
+
+    set({ renamingChatId: cleanChatId });
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "PATCH",
+        body: JSON.stringify({ chatId: cleanChatId, newTitle }),
+      });
+
+      if (!res.ok) throw new Error("Faied to rename chat");
+
+      set((state) => ({
+        chats: state.chats.map((c) =>
+          c._id === cleanChatId ? { ...c, title: newTitle } : c,
+        ),
+        renamingChatId: null,
+      }));
+
+      toast.success("Chat renamed");
+    } catch (err) {
+      console.error("renameChat error", err);
+      toast.error("Failed to rename chat");
     }
   },
 

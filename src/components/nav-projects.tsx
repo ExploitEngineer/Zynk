@@ -18,6 +18,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useChatStore } from "@/store/chat-store";
+import { useState, useEffect, useRef } from "react";
 
 export function NavProjects({
   projects,
@@ -28,6 +30,17 @@ export function NavProjects({
   }[];
 }) {
   const { isMobile } = useSidebar();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const [title, setTitle] = useState<string>("");
+  const { renameChat, renamingChatId, setRenamingChatId } = useChatStore();
+
+  useEffect(() => {
+    if (renamingChatId && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [renamingChatId]);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -37,7 +50,30 @@ export function NavProjects({
           <SidebarMenuItem key={item.url}>
             <SidebarMenuButton asChild>
               <Link href={item.url}>
-                <span>{item.name}</span>
+                {renamingChatId === item.url ? (
+                  <input
+                    type="text"
+                    ref={inputRef}
+                    autoFocus
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        renameChat(item.url, title.trim() || item.name);
+                      }
+                      if (e.key === "Escape") {
+                        setRenamingChatId(null);
+                        setTitle("");
+                      }
+                    }}
+                    onBlur={(e) =>
+                      renameChat(item.url, e.target.value.trim() || item.name)
+                    }
+                    className="rounded border-0 bg-transparent px-1 text-sm outline-0 focus:ring-0"
+                  />
+                ) : (
+                  <span>{item.name}</span>
+                )}
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -52,7 +88,13 @@ export function NavProjects({
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
               >
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  onClick={() => {
+                    setRenamingChatId(item.url);
+                    setTitle("");
+                  }}
+                  className="cursor-pointer"
+                >
                   <FilePen className="text-muted-foreground" />
                   <span>Rename</span>
                 </DropdownMenuItem>
