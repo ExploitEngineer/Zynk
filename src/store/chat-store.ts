@@ -35,8 +35,8 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
         })(),
         {
           loading: "Loading chats...",
-          success: "Chats loaded successfully ✅",
-          error: "Failed to load chats ❌",
+          success: "Chats loaded successfully",
+          error: "Failed to load chats",
         },
       );
     } catch (err) {
