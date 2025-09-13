@@ -94,7 +94,9 @@ const AIChat = () => {
                 <div key={message.id}>
                   <Message from={message.role}>
                     <MessageContent>
-                      <Response>{message.text}</Response>
+                      <Response parseIncompleteMarkdown>
+                        {message.text}
+                      </Response>
                     </MessageContent>
                   </Message>
 

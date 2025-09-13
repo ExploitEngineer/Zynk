@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Geist, Geist_Mono, Montserrat, Inter } from "next/font/google";
+import "katex/dist/katex.min.css";
+import "highlight.js/styles/github.css";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
