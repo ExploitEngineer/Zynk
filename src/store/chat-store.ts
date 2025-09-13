@@ -48,7 +48,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        body: JSON.stringify(title),
+        body: JSON.stringify({ title }),
       });
 
       if (!res.ok) throw new Error("Failed to create chat");
