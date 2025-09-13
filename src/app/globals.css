@@ -123,12 +123,12 @@
 }
 
 /* hide scrollbar on the first child of Conversation */
-#conversation > div {
+#conversation {
   overflow-y: auto; /* keep scrolling */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
 
-#conversation > div::-webkit-scrollbar {
+#conversation::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
