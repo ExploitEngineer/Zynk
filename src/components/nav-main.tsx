@@ -20,12 +20,12 @@ export function NavMain() {
     setIsEditing(true);
   };
 
-  const handleBlur = (): void => {
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown = async (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ): Promise<void> => {
     if (e.key === "Enter") {
+      await createChat(title);
+      setTitle("New Chat");
       setIsEditing(false);
     }
   };
@@ -33,10 +33,7 @@ export function NavMain() {
   return (
     <SidebarGroup>
       <SidebarMenu>
-        <SidebarMenuItem
-          onDoubleClick={handleDoubleClick}
-          onClick={(): Promise<void> => createChat(title)}
-        >
+        <SidebarMenuItem onDoubleClick={handleDoubleClick}>
           <SidebarMenuButton
             className="flex !cursor-pointer items-center"
             tooltip="new chat"
@@ -49,7 +46,6 @@ export function NavMain() {
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                   setTitle(e.target.value)
                 }
-                onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
                 autoFocus
                 className="ml-2 rounded border-0 px-1 text-sm outline-0 focus:ring-0"
