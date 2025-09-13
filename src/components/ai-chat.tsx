@@ -7,7 +7,6 @@ import type { FileUIPart } from "ai";
 import { Separator } from "@/components/ui/separator";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { Response } from "@/components/ai-elements/response";
-import { Suggestions, Suggestion } from "./ai-elements/suggestion";
 import { Actions, Action } from "@/components/ai-elements/actions";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
@@ -93,7 +92,7 @@ const AIChat = () => {
               {messages.map((message: ChatMessage) => (
                 <div key={message.id}>
                   <Message from={message.role}>
-                    <MessageContent>
+                    <MessageContent className="bg-green-400">
                       <Response parseIncompleteMarkdown>
                         {message.text}
                       </Response>
@@ -163,11 +162,6 @@ const AIChat = () => {
             <ConversationScrollButton />
           </Conversation>
 
-          <Suggestions className="flex w-full flex-wrap justify-center gap-2 pt-3">
-            {suggestions.map((suggestion: string) => (
-              <Suggestion key={suggestion} suggestion={suggestion} />
-            ))}
-          </Suggestions>
           <PromptInput
             onSubmit={handleSubmit}
             className="mt-4"
