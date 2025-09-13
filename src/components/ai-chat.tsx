@@ -92,7 +92,7 @@ const AIChat = () => {
               {messages.map((message: ChatMessage) => (
                 <div key={message.id}>
                   <Message from={message.role}>
-                    <MessageContent className="bg-green-400">
+                    <MessageContent>
                       <Response parseIncompleteMarkdown>
                         {message.text}
                       </Response>
