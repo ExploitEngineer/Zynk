@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { useChatStore } from "@/store/chat-store";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 export function NavProjects({
   projects,
@@ -35,13 +35,6 @@ export function NavProjects({
   const [title, setTitle] = useState<string>("");
   const { renameChat, renamingChatId, setRenamingChatId } = useChatStore();
 
-  useEffect(() => {
-    if (renamingChatId && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [renamingChatId]);
-
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel className="text-md mb-2">chats</SidebarGroupLabel>
@@ -49,34 +42,37 @@ export function NavProjects({
         {projects.map((item) => (
           <SidebarMenuItem key={item.url}>
             <SidebarMenuButton asChild>
-              <Link href={item.url}>
-                {renamingChatId === item.url ? (
-                  <input
-                    type="text"
-                    ref={inputRef}
-                    autoFocus
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        renameChat(item.url, title.trim() || item.name);
-                      }
-                      if (e.key === "Escape") {
-                        setRenamingChatId(null);
-                        setTitle("");
-                      }
-                    }}
-                    onBlur={(e) =>
-                      renameChat(item.url, e.target.value.trim() || item.name)
+              {renamingChatId === item.url ? (
+                <input
+                  type="text"
+                  ref={inputRef}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      renameChat(item.url, title.trim() || item.name);
                     }
-                    className="rounded border-0 bg-transparent px-1 text-sm outline-0 focus:ring-0"
-                  />
-                ) : (
+                    if (e.key === "Escape") {
+                      setRenamingChatId(null);
+                      setTitle("");
+                    }
+                  }}
+                  className="rounded border-0 bg-transparent text-sm outline-0 focus:ring-0"
+                />
+              ) : (
+                <Link href={item.url}>
                   <span>{item.name}</span>
-                )}
-              </Link>
+                </Link>
+              )}
             </SidebarMenuButton>
-            <DropdownMenu>
+            <DropdownMenu
+              onOpenChange={(open) => {
+                if (!open && renamingChatId === item.url) {
+                  inputRef.current?.focus();
+                  inputRef.current?.select();
+                }
+              }}
+            >
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction className="cursor-pointer" showOnHover>
                   <MoreHorizontal />
@@ -91,7 +87,13 @@ export function NavProjects({
                 <DropdownMenuItem
                   onClick={() => {
                     setRenamingChatId(item.url);
-                    setTitle("");
+                    setTitle(item.name);
+
+                    // Focus input on next tick
+                    setTimeout(() => {
+                      inputRef.current?.focus();
+                      inputRef.current?.select();
+                    }, 300);
                   }}
                   className="cursor-pointer"
                 >
