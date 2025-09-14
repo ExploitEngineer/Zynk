@@ -59,12 +59,6 @@ const models: Models[] = [
   { name: "GPT 4o", value: "gpt-4o" },
 ];
 
-const suggestions: string[] = [
-  "Can you explain how to play tennis?",
-  "What is the weather in Tokyo?",
-  "How does machine learning work?",
-];
-
 const AIChat = () => {
   const { messages, status, sendMessage, regenerate } = useChatStore();
   const [input, setInput] = useState("");
