@@ -183,6 +183,26 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
         return;
       }
       currentChatId = newChatId;
+
+      (async () => {
+        try {
+          const res = await fetch("/api/chat-name", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text }),
+          });
+
+          if (!res.ok) throw new Error(await res.text());
+
+          const data = await res.json();
+          if (data?.title) {
+            await get().renameChat(newChatId, data.title);
+          }
+        } catch (err) {
+          toast.error("chat-name generation failed");
+          console.error("chat-name generation failed:", err);
+        }
+      })();
     }
 
     // add user message locally
