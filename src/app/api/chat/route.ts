@@ -1,10 +1,10 @@
-import { dbConnect } from "@/lib/db-connection";
-import Chat from "@/models/chat.model";
+import { prisma } from "@/lib/prisma";
 import { NextRequest } from "next/server";
 
 export async function GET(): Promise<Response> {
-  await dbConnect();
-  const chats = await Chat.find({});
+  const chats = await prisma.chat.findMany({
+    include: { messages: true },
+  });
 
   return new Response(JSON.stringify(chats), {
     headers: { "Content-Type": "application/json" },
@@ -12,18 +12,18 @@ export async function GET(): Promise<Response> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
-  await dbConnect();
   const { title } = await req.json();
-  const chat = await Chat.create({ title: title || "New Chat" });
+  const chat = await prisma.chat.create({
+    data: { title: title || "New Chat" },
+  });
 
-  return new Response(JSON.stringify({ chatId: chat._id, title: chat.title }), {
+  return new Response(JSON.stringify({ chatId: chat.id, title: chat.title }), {
     headers: { "Content-Type": "application/json" },
   });
 }
 
 export async function PATCH(req: NextRequest): Promise<Response> {
   try {
-    await dbConnect();
     const { chatId, newTitle } = await req.json();
 
     if (!chatId || !newTitle) {
@@ -33,18 +33,10 @@ export async function PATCH(req: NextRequest): Promise<Response> {
       );
     }
 
-    const chat = await Chat.findByIdAndUpdate(
-      chatId,
-      { title: newTitle },
-      { new: true },
-    );
-
-    if (!chat) {
-      return new Response(JSON.stringify({ error: "Chat not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+    const chat = await prisma.chat.update({
+      where: { id: chatId },
+      data: { title: newTitle },
+    });
 
     return new Response(JSON.stringify(chat), {
       status: 200,
@@ -61,7 +53,6 @@ export async function PATCH(req: NextRequest): Promise<Response> {
 
 export async function DELETE(req: NextRequest) {
   try {
-    await dbConnect();
     const { chatId } = await req.json();
 
     if (!chatId) {
@@ -71,14 +62,7 @@ export async function DELETE(req: NextRequest) {
       });
     }
 
-    const chat = await Chat.findByIdAndDelete(chatId, { new: true });
-
-    if (!chat) {
-      return new Response(JSON.stringify({ error: "Chat not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+    const chat = await prisma.chat.delete({ where: { id: chatId } });
 
     return new Response(JSON.stringify(chat), {
       status: 200,

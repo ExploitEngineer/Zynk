@@ -1,7 +1,7 @@
 import { ChatMessage } from "./message";
 
 export interface Chat {
-  _id: string;
+  id: string;
   title: string;
   lastResponseId?: string | null;
   messages: ChatMessage[];

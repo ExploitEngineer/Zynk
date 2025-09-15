@@ -31,7 +31,6 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   status: "ready",
   renamingChatId: null,
   deletingChatId: null,
-  isRenamingChat: false,
   isDeletingChat: false,
 
   fetchChats: async () => {
@@ -66,7 +65,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
 
       const data = await res.json();
       const newChat: Chat = {
-        _id: data.chatId,
+        id: data.chatId,
         title: data.title,
         lastResponseId: null,
         messages: [],
@@ -106,7 +105,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
 
       set((state) => ({
         chats: state.chats.map((c) =>
-          c._id === chatId ? { ...c, title: newTitle } : c,
+          c.id === chatId ? { ...c, title: newTitle } : c,
         ),
         renamingChatId: null,
       }));
@@ -123,7 +122,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     try {
       const res = await fetch("/api/chat", {
         method: "DELETE",
-        body: JSON.stringify({ chatId: chatId }),
+        body: JSON.stringify({ chatId }),
       });
 
       if (!res.ok) throw new Error("error deleting chat");
@@ -131,8 +130,8 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
       const data = await res.json();
 
       set((state) => {
-        const updatedChats = state.chats.filter((c) => c._id !== data._id);
-        const isCurrentDeleted = state.currentChatId === data._id;
+        const updatedChats = state.chats.filter((c) => c.id !== data.id);
+        const isCurrentDeleted = state.currentChatId === data.id;
 
         return {
           chats: updatedChats,
@@ -162,7 +161,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
 
       const chat: Chat = await res.json();
       const uiMessages: ChatMessage[] = (chat.messages ?? []).map((m: any) => ({
-        id: m._id?.toString() ?? `msg-${Date.now()}`,
+        id: m.id?.toString() ?? `msg-${Date.now()}`,
         role: m.role,
         text: m.text,
       }));

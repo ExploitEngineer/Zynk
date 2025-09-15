@@ -65,14 +65,14 @@ export function NavChats() {
         <SidebarMenu>
           {chats.map((chat) => (
             <SidebarMenuItem key={chat.title}>
-              {renamingChatId === chat._id ? (
+              {renamingChatId === chat.id ? (
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      renameChat(chat._id, title.trim() || chat.title);
+                      renameChat(chat.id, title.trim() || chat.title);
                     }
                     if (e.key === "Escape") {
                       setRenamingChatId(null);
@@ -83,14 +83,14 @@ export function NavChats() {
                 />
               ) : (
                 <SidebarMenuButton asChild>
-                  <Link href={`/chat/${chat._id}`}>
+                  <Link href={`/chat/${chat.id}`}>
                     <span>{chat.title}</span>
                   </Link>
                 </SidebarMenuButton>
               )}
 
               <DropdownMenu>
-                {renamingChatId === chat._id ? null : (
+                {renamingChatId === chat.id ? null : (
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuAction className="cursor-pointer" showOnHover>
                       <MoreHorizontal />
@@ -105,7 +105,7 @@ export function NavChats() {
                 >
                   <DropdownMenuItem
                     onClick={() => {
-                      setRenamingChatId(chat._id);
+                      setRenamingChatId(chat.id);
                       setTitle(chat.title);
                     }}
                   >
@@ -114,7 +114,7 @@ export function NavChats() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setDeletingChatId(chat._id)}
+                    onClick={() => setDeletingChatId(chat.id)}
                     className="cursor-pointer"
                   >
                     <Trash2 color="red" />
@@ -137,7 +137,7 @@ export function NavChats() {
             <DialogDescription>
               Are you sure you want to delete the chat{" "}
               <span className="font-semibold text-white">
-                {chats.find((c) => c._id === deletingChatId)?.title ??
+                {chats.find((c) => c.id === deletingChatId)?.title ??
                   "Unknown chat"}
               </span>
               ?
