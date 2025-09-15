@@ -35,7 +35,7 @@ export async function PATCH(req: NextRequest): Promise<Response> {
 
     const chat = await Chat.findByIdAndUpdate(
       chatId,
-      { title: newTitle }, // FIX: wrap in object
+      { title: newTitle },
       { new: true },
     );
 
@@ -52,6 +52,40 @@ export async function PATCH(req: NextRequest): Promise<Response> {
     });
   } catch (error) {
     console.error("PATCH /chat error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    await dbConnect();
+    const { chatId } = await req.json();
+
+    if (!chatId) {
+      return new Response(JSON.stringify({ error: "Missing chatId" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const chat = await Chat.findByIdAndDelete(chatId, { new: true });
+
+    if (!chat) {
+      return new Response(JSON.stringify({ error: "Chat not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(JSON.stringify(chat), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (err) {
+    console.error("DELETE /chat error:", err);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
