@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
+import { NavChats } from "@/components/nav-chats";
 import { NavUser } from "@/components/nav-user";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -38,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <NavMain />
-        <NavProjects />
+        <NavChats />
       </SidebarContent>
 
       <Separator />

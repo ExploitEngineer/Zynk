@@ -32,7 +32,7 @@ import { useChatStore } from "@/store/chat-store";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export function NavProjects() {
+export function NavChats() {
   const router = useRouter();
   const { isMobile } = useSidebar();
 
