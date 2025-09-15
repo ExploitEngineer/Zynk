@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ChevronDown,
   Sparkles,
@@ -15,8 +17,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { memo } from "react";
 
-export function AIChatHeader() {
+export default memo(function AIChatHeader() {
   return (
     <div className="top-0 z-10 flex h-[6%] w-full items-center justify-between py-2">
       <DropdownMenu>
@@ -90,4 +93,4 @@ export function AIChatHeader() {
       </DropdownMenu>
     </div>
   );
-}
+});

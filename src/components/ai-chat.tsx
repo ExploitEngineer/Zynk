@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { ChatMessage } from "@/types";
-import { AIChatHeader } from "./ai-chat-header";
+import AIChatHeader from "./ai-chat-header";
 import type { FileUIPart } from "ai";
 import { Separator } from "@/components/ui/separator";
 import { TextShimmer } from "@/components/ui/text-shimmer";
