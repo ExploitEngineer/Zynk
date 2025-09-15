@@ -134,9 +134,16 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
 
       const data = await res.json();
 
-      set((state) => ({
-        chats: state.chats.filter((c) => c._id !== data._id),
-      }));
+      set((state) => {
+        const updatedChats = state.chats.filter((c) => c._id !== data._id);
+        const isCurrentDeleted = state.currentChatId === data._id;
+
+        return {
+          chats: updatedChats,
+          currentChatId: isCurrentDeleted ? null : state.currentChatId,
+          messages: isCurrentDeleted ? [] : state.messages,
+        };
+      });
 
       toast.success("Chat deleted");
     } catch (err) {

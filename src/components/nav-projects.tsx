@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useChatStore } from "@/store/chat-store";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export function NavProjects({
   projects,
@@ -39,6 +40,7 @@ export function NavProjects({
     url: string;
   }[];
 }) {
+  const router = useRouter();
   const { isMobile } = useSidebar();
 
   const [title, setTitle] = useState<string>("");
@@ -51,6 +53,11 @@ export function NavProjects({
     setDeletingChatId,
     deleteChat,
   } = useChatStore();
+
+  const handleDeleteChat = async (chatId: string) => {
+    await deleteChat(chatId);
+    router.push("/chat");
+  };
 
   return (
     <>
@@ -142,7 +149,9 @@ export function NavProjects({
                 type="button"
                 className="cursor-pointer bg-red-600 text-white transition-all duration-300 hover:scale-110 hover:bg-red-800"
                 disabled={isDeletingChat}
-                onClick={() => deletingChatId && deleteChat(deletingChatId)}
+                onClick={() =>
+                  deletingChatId && handleDeleteChat(deletingChatId)
+                }
               >
                 {isDeletingChat ? (
                   <div className="flex items-center gap-2">
