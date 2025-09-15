@@ -1,7 +1,7 @@
 "use client";
 
-import { LogOut, Sparkles, Settings, User } from "lucide-react";
-
+import { LogOut, Sparkles, Settings, User as UserIcon } from "lucide-react";
+import { User } from "@/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -18,19 +18,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export type UserPlan = "Free" | "Pro" | "Startup";
+type UserPlan = "Free" | "Pro" | "Startup";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    plan?: UserPlan;
-    avatar: string;
-    email: string;
-  };
-}) {
+export function NavUser() {
   const { isMobile } = useSidebar();
+
+  const user: User = {
+    name: "shadcn",
+    plan: "Free" as UserPlan,
+    avatar: "/avatars/shadcn.jpg",
+    email: "abdulrafayofficial.work@gmail.com",
+  };
 
   return (
     <SidebarMenu>
@@ -59,7 +57,7 @@ export function NavUser({
           >
             <DropdownMenuGroup>
               <DropdownMenuItem disabled>
-                <User />
+                <UserIcon />
                 {user.email}
               </DropdownMenuItem>
             </DropdownMenuGroup>

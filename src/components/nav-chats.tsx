@@ -29,22 +29,17 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useChatStore } from "@/store/chat-store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export function NavProjects({
-  projects,
-}: {
-  projects: {
-    name: string;
-    url: string;
-  }[];
-}) {
+export function NavProjects() {
   const router = useRouter();
   const { isMobile } = useSidebar();
 
   const [title, setTitle] = useState<string>("");
   const {
+    chats,
+    fetchChats,
     renameChat,
     renamingChatId,
     deletingChatId,
@@ -53,6 +48,10 @@ export function NavProjects({
     setDeletingChatId,
     deleteChat,
   } = useChatStore();
+
+  useEffect((): void => {
+    fetchChats();
+  }, [fetchChats]);
 
   const handleDeleteChat = async (chatId: string) => {
     await deleteChat(chatId);
@@ -64,16 +63,16 @@ export function NavProjects({
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <SidebarGroupLabel className="text-md mb-2">chats</SidebarGroupLabel>
         <SidebarMenu>
-          {projects.map((item) => (
-            <SidebarMenuItem key={item.url}>
-              {renamingChatId === item.url ? (
+          {chats.map((chat) => (
+            <SidebarMenuItem key={chat.title}>
+              {renamingChatId === chat._id ? (
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      renameChat(item.url, title.trim() || item.name);
+                      renameChat(chat._id, title.trim() || chat.title);
                     }
                     if (e.key === "Escape") {
                       setRenamingChatId(null);
@@ -84,14 +83,14 @@ export function NavProjects({
                 />
               ) : (
                 <SidebarMenuButton asChild>
-                  <Link href={item.url}>
-                    <span>{item.name}</span>
+                  <Link href={`/chat/${chat._id}`}>
+                    <span>{chat.title}</span>
                   </Link>
                 </SidebarMenuButton>
               )}
 
               <DropdownMenu>
-                {renamingChatId === item.url ? null : (
+                {renamingChatId === chat._id ? null : (
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuAction className="cursor-pointer" showOnHover>
                       <MoreHorizontal />
@@ -106,8 +105,8 @@ export function NavProjects({
                 >
                   <DropdownMenuItem
                     onClick={() => {
-                      setRenamingChatId(item.url);
-                      setTitle(item.name);
+                      setRenamingChatId(chat._id);
+                      setTitle(chat.title);
                     }}
                   >
                     <FilePen className="text-muted-foreground" />
@@ -115,7 +114,7 @@ export function NavProjects({
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setDeletingChatId(item.url)}
+                    onClick={() => setDeletingChatId(chat._id)}
                     className="cursor-pointer"
                   >
                     <Trash2 color="red" />
@@ -137,8 +136,9 @@ export function NavProjects({
             <DialogTitle>Delete Chat</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete the chat{" "}
-              <span className="text-foreground font-semibold">
-                {projects.find((p) => p.url === deletingChatId)?.name}
+              <span className="font-semibold text-white">
+                {chats.find((c) => c._id === deletingChatId)?.title ??
+                  "Unknown chat"}
               </span>
               ?
             </DialogDescription>

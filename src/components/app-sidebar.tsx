@@ -4,7 +4,7 @@ import * as React from "react";
 import { useSidebar } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
-import { NavUser, type UserPlan } from "@/components/nav-user";
+import { NavUser } from "@/components/nav-user";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -16,23 +16,9 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import type { User, Chat } from "@/types";
-import { useChatStore } from "@/store/chat-store";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
-  const { chats, fetchChats } = useChatStore();
-
-  React.useEffect((): void => {
-    fetchChats();
-  }, [fetchChats]);
-
-  const user: User = {
-    name: "shadcn",
-    plan: "Free" as UserPlan,
-    avatar: "/avatars/shadcn.jpg",
-    email: "abdulrafayofficial.work@gmail.com",
-  };
 
   return (
     <Sidebar className="font-code" collapsible="icon" {...props}>
@@ -52,18 +38,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <NavMain />
-        <NavProjects
-          projects={chats.map((c: Chat) => ({
-            id: c._id,
-            name: c.title,
-            url: `/chat/${c._id}`,
-          }))}
-        />
+        <NavProjects />
       </SidebarContent>
 
       <Separator />
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
