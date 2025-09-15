@@ -402,11 +402,17 @@ export const PromptInput = ({
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
+    const form = event.currentTarget;
+    const text = form.message.value as string;
+
     const files: FileUIPart[] = items.map(({ ...item }) => ({
       ...item,
     }));
 
-    onSubmit({ text: event.currentTarget.message.value, files }, event);
+    onSubmit({ text, files }, event);
+
+    form.reset();
+    clear();
   };
 
   const ctx = useMemo<AttachmentsContext>(

@@ -152,8 +152,9 @@ const AIChat = () => {
                   Thinking...
                 </TextShimmer>
               )}
+
+              <ConversationScrollButton />
             </ConversationContent>
-            <ConversationScrollButton />
           </Conversation>
 
           <PromptInput
@@ -168,10 +169,7 @@ const AIChat = () => {
                   <PromptInputAttachment data={attachment} />
                 )}
               </PromptInputAttachments>
-              <PromptInputTextarea
-                onChange={(e): void => setInput(e.target.value)}
-                value={input}
-              />
+              <PromptInputTextarea />
             </PromptInputBody>
 
             <PromptInputToolbar>
@@ -216,6 +214,7 @@ const AIChat = () => {
               </PromptInputTools>
 
               <PromptInputSubmit
+                className="cursor-pointer"
                 disabled={!input && status === "ready"}
                 status={status}
               />
