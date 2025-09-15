@@ -67,8 +67,8 @@ const AIChat = () => {
 
   const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
     if (!message.text?.trim()) return;
-    await sendMessage(message.text, model);
     setInput("");
+    await sendMessage(message.text, model);
   };
 
   const handleRegenerate = async (): Promise<void> => {
@@ -152,9 +152,8 @@ const AIChat = () => {
                   Thinking...
                 </TextShimmer>
               )}
-
-              <ConversationScrollButton />
             </ConversationContent>
+            <ConversationScrollButton />
           </Conversation>
 
           <PromptInput
@@ -169,7 +168,10 @@ const AIChat = () => {
                   <PromptInputAttachment data={attachment} />
                 )}
               </PromptInputAttachments>
-              <PromptInputTextarea />
+              <PromptInputTextarea
+                onChange={(e): void => setInput(e.target.value)}
+                value={input}
+              />
             </PromptInputBody>
 
             <PromptInputToolbar>
@@ -215,7 +217,7 @@ const AIChat = () => {
 
               <PromptInputSubmit
                 className="cursor-pointer"
-                disabled={!input && status === "ready"}
+                disabled={!input}
                 status={status}
               />
             </PromptInputToolbar>
