@@ -1,27 +1,32 @@
 import OpenAI from "openai";
-import { dbConnect } from "@/lib/db-connection";
-import Message from "@/models/message.model";
-import Chat from "@/models/chat.model";
+import { prisma } from "@/lib/prisma";
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("OPENAI_API_KEY is not set in environment variables");
+}
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(req: Request): Promise<Response> {
-  await dbConnect();
   const { chatId, text, model = "gpt-4.1-nano" } = await req.json();
 
-  const chat = await Chat.findById(chatId);
+  const chat = await prisma.chat.findUnique({
+    where: { id: chatId },
+    include: { messages: true },
+  });
   if (!chat) {
     return new Response("Chat not found", { status: 404 });
   }
 
-  const userMessage = await Message.create({
-    role: "user",
-    text,
-    chatId,
+  await prisma.message.create({
+    data: {
+      role: "user",
+      text,
+      chat: { connect: { id: chatId } },
+    },
   });
-  chat.messages.push(userMessage._id);
 
   const response = await openai.responses.create({
     model,
@@ -51,20 +56,18 @@ export async function POST(req: Request): Promise<Response> {
 
         console.log("Assistant Text:", assistantText);
 
-        const assistantMessage = await Message.create({
-          role: "assistant",
-          text: assistantText,
-          chatId,
+        await prisma.message.create({
+          data: {
+            role: "assistant",
+            text: assistantText,
+            chat: { connect: { id: chatId } },
+          },
         });
 
-        chat.messages.push(assistantMessage._id);
-
-        if (newResponseId) {
-          chat.lastResponseId = newResponseId;
-          await chat.save();
-        } else {
-          await chat.save();
-        }
+        await prisma.chat.update({
+          where: { id: chatId },
+          data: { lastResponseId: newResponseId || chat.lastResponseId },
+        });
       } catch (err) {
         controller.error(err);
       }
