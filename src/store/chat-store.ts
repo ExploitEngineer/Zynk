@@ -10,11 +10,15 @@ interface ChatStore {
   messages: ChatMessage[];
   status: ChatStatus;
   renamingChatId: string | null;
+  deletingChatId: string | null;
+  isDeletingChat: boolean;
 
   fetchChats: () => Promise<void>;
   createChat: (title: string) => Promise<void>;
   setRenamingChatId: (chatId: string | null) => void;
+  setDeletingChatId: (chatId: string | null) => void;
   renameChat: (chatId: string, newTitle: string) => Promise<void>;
+  deleteChat: (chatId: string) => Promise<void>;
   setCurrentChat: (chatId: string) => Promise<void>;
   sendMessage: (text: string, model?: string) => Promise<void>;
   regenerate: (model?: string) => Promise<void>;
@@ -26,7 +30,9 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   messages: [],
   status: "ready",
   renamingChatId: null,
+  deletingChatId: null,
   isRenamingChat: false,
+  isDeletingChat: false,
 
   fetchChats: async () => {
     try {
@@ -81,6 +87,10 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     set({ renamingChatId: chatId });
   },
 
+  setDeletingChatId: (chatId) => {
+    set({ deletingChatId: chatId });
+  },
+
   renameChat: async (chatId, newTitle) => {
     const cleanChatId = chatId.split("/").pop();
 
@@ -105,6 +115,33 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     } catch (err) {
       console.error("renameChat error", err);
       toast.error("Failed to rename chat");
+    }
+  },
+
+  deleteChat: async (chatId) => {
+    const cleanChatId = chatId.split("/").pop();
+
+    set({ isDeletingChat: true });
+    try {
+      const res = await fetch("/api/chat", {
+        method: "DELETE",
+        body: JSON.stringify({ chatId: cleanChatId }),
+      });
+
+      if (!res.ok) throw new Error("error deleting chat");
+
+      const data = await res.json();
+
+      set((state) => ({
+        chats: state.chats.filter((c) => c._id !== data._id),
+      }));
+
+      toast.success("Chat deleted");
+    } catch (err) {
+      console.error("deleteChat error", err);
+      toast.error("Failed to delete chat");
+    } finally {
+      set({ isDeletingChat: false });
     }
   },
 
