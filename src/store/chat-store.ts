@@ -14,7 +14,7 @@ interface ChatStore {
   isDeletingChat: boolean;
 
   fetchChats: () => Promise<void>;
-  createChat: (title: string) => Promise<void>;
+  createChat: (title: string) => Promise<string>;
   setRenamingChatId: (chatId: string | null) => void;
   setDeletingChatId: (chatId: string | null) => void;
   renameChat: (chatId: string, newTitle: string) => Promise<void>;
@@ -55,7 +55,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     }
   },
 
-  createChat: async (title): Promise<void> => {
+  createChat: async (title) => {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -77,6 +77,8 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
         currentChatId: data.chatId,
         messages: [],
       }));
+
+      return data.chatId;
     } catch (err) {
       console.error("createChat error", err);
       toast.error("Failed to create chat");
@@ -172,10 +174,15 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   sendMessage: async (text: string, model = "gpt-4.1-nano") => {
     if (!text?.trim()) return;
 
-    const { currentChatId } = get();
+    let { currentChatId } = get();
+
     if (!currentChatId) {
-      toast.error("No chat selected");
-      return;
+      const newChatId = await get().createChat("new chat");
+      if (!newChatId) {
+        toast.error("Failed to create chat");
+        return;
+      }
+      currentChatId = newChatId;
     }
 
     // add user message locally
@@ -191,7 +198,6 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     }));
 
     try {
-      // call backend openai route, streaming response
       const res = await fetch("/api/openai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -207,7 +213,6 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
         throw new Error(errText || "OpenAI request failed");
       }
 
-      // add assistant message placeholder
       const assistantId = `assistant-${Date.now()}`;
       set((state) => ({
         messages: [
