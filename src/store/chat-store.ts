@@ -94,21 +94,19 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   },
 
   renameChat: async (chatId, newTitle) => {
-    const cleanChatId = chatId.split("/").pop();
-
-    set({ renamingChatId: cleanChatId });
+    set({ renamingChatId: chatId });
 
     try {
       const res = await fetch("/api/chat", {
         method: "PATCH",
-        body: JSON.stringify({ chatId: cleanChatId, newTitle }),
+        body: JSON.stringify({ chatId, newTitle }),
       });
 
       if (!res.ok) throw new Error("Faied to rename chat");
 
       set((state) => ({
         chats: state.chats.map((c) =>
-          c._id === cleanChatId ? { ...c, title: newTitle } : c,
+          c._id === chatId ? { ...c, title: newTitle } : c,
         ),
         renamingChatId: null,
       }));
@@ -121,13 +119,11 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   },
 
   deleteChat: async (chatId) => {
-    const cleanChatId = chatId.split("/").pop();
-
     set({ isDeletingChat: true });
     try {
       const res = await fetch("/api/chat", {
         method: "DELETE",
-        body: JSON.stringify({ chatId: cleanChatId }),
+        body: JSON.stringify({ chatId: chatId }),
       });
 
       if (!res.ok) throw new Error("error deleting chat");
@@ -181,37 +177,6 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
   sendMessage: async (text: string, model = "gpt-4.1-nano") => {
     if (!text?.trim()) return;
 
-    let { currentChatId } = get();
-
-    if (!currentChatId) {
-      const newChatId = await get().createChat("new chat");
-      if (!newChatId) {
-        toast.error("Failed to create chat");
-        return;
-      }
-      currentChatId = newChatId;
-
-      (async () => {
-        try {
-          const res = await fetch("/api/chat-name", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: text }),
-          });
-
-          if (!res.ok) throw new Error(await res.text());
-
-          const data = await res.json();
-          if (data?.title) {
-            await get().renameChat(newChatId, data.title);
-          }
-        } catch (err) {
-          toast.error("chat-name generation failed");
-          console.error("chat-name generation failed:", err);
-        }
-      })();
-    }
-
     // add user message locally
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -223,6 +188,8 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
       messages: [...state.messages, userMessage],
       status: "submitted",
     }));
+
+    let { currentChatId } = get();
 
     try {
       const res = await fetch("/api/openai", {

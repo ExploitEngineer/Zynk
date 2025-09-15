@@ -48,6 +48,8 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { useChatStore } from "@/store/chat-store";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface Models {
   name: string;
@@ -60,7 +62,16 @@ const models: Models[] = [
 ];
 
 const AIChat = () => {
-  const { messages, status, sendMessage, regenerate } = useChatStore();
+  const router = useRouter();
+  const {
+    messages,
+    status,
+    currentChatId,
+    createChat,
+    sendMessage,
+    renameChat,
+    regenerate,
+  } = useChatStore();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
@@ -68,6 +79,32 @@ const AIChat = () => {
   const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
     if (!message.text?.trim()) return;
     setInput("");
+
+    if (!currentChatId) {
+      const newChatId = await createChat("new chat");
+
+      try {
+        const res = await fetch("/api/chat-name", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: message.text }),
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+
+        const data = await res.json();
+        const title = data?.title || "new chat";
+        await renameChat(newChatId, title);
+      } catch (err) {
+        toast.error("chat-name generation failed");
+        console.error(err);
+      }
+
+      router.push(`/chat/${newChatId}`);
+      await sendMessage(message.text, model);
+      return;
+    }
+
     await sendMessage(message.text, model);
   };
 
