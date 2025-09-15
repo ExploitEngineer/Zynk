@@ -18,7 +18,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-type UserPlan = "Free" | "Pro" | "Startup";
+export type UserPlan = "Free" | "Pro" | "Startup";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
