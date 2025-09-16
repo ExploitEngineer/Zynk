@@ -19,6 +19,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { signInWithGoogle } from "@/lib/auth-client";
 
 export default function LoginComponent() {
   const router = useRouter();
@@ -60,6 +61,7 @@ export default function LoginComponent() {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <Button
                 type="button"
+                onClick={signInWithGoogle}
                 variant="outline"
                 className="cursor-pointer"
               >

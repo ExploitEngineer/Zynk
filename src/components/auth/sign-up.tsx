@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { signUp } from "@/server/users";
+import { signInWithGoogle } from "@/lib/auth-client";
 import { signUpSchema, SignUpForm } from "@/schemas/auth";
 import { useRouter } from "next/navigation";
 
@@ -67,6 +68,7 @@ export default function SignUpComponent() {
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               <Button
+                onClick={signInWithGoogle}
                 className="cursor-pointer"
                 type="button"
                 variant="outline"
