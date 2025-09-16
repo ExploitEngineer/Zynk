@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { signUp } from "@/server/users";
-import { signInWithGoogle } from "@/lib/auth-client";
+import { signInWithGoogle, signInWithGithub } from "@/lib/auth-client";
 import { signUpSchema, SignUpForm } from "@/schemas/auth";
 import { useRouter } from "next/navigation";
 
@@ -83,16 +83,17 @@ export default function SignUpComponent() {
               </Button>
               <Button
                 className="cursor-pointer"
+                onClick={signInWithGithub}
                 type="button"
                 variant="outline"
               >
                 <Image
-                  src="/assets/images/microsoft.svg"
-                  width={15}
-                  height={15}
-                  alt="microsoft image"
+                  src="assets/images/github-white.svg"
+                  width={18}
+                  height={17.4}
+                  alt="github image"
                 />
-                <span>Microsoft</span>
+                <span>Github</span>
               </Button>
             </div>
 

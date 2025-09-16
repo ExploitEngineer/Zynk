@@ -10,3 +10,9 @@ export const signInWithGoogle = async () => {
     callbackURL: "/chat",
   });
 };
+
+export const signInWithGithub = async () => {
+  await authClient.signIn.social({
+    provider: "github",
+  });
+};

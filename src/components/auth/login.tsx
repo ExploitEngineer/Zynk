@@ -19,7 +19,7 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { signInWithGoogle } from "@/lib/auth-client";
+import { signInWithGoogle, signInWithGithub } from "@/lib/auth-client";
 
 export default function LoginComponent() {
   const router = useRouter();
@@ -75,16 +75,17 @@ export default function LoginComponent() {
               </Button>
               <Button
                 type="button"
+                onClick={signInWithGithub}
                 variant="outline"
                 className="cursor-pointer"
               >
                 <Image
-                  src="/assets/images/microsoft.svg"
-                  width={15}
-                  height={15}
-                  alt="microsoft image"
+                  src="/assets/images/github-white.svg"
+                  width={18}
+                  height={17.5}
+                  alt="github image"
                 />
-                <span>Microsoft</span>
+                <span>Github</span>
               </Button>
             </div>
 
