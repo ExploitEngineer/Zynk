@@ -88,6 +88,8 @@ const AIChat = () => {
         return;
       }
 
+      router.push(`/chat/${newChatId}`);
+
       try {
         const res = await fetch("/api/chat-name", {
           method: "POST",
@@ -105,7 +107,6 @@ const AIChat = () => {
         console.error(err);
       }
 
-      router.push(`/chat/${newChatId}`);
       await sendMessage(message.text, model);
       return;
     }
