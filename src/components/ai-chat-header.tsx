@@ -40,19 +40,20 @@ export default function AIChatHeader() {
     chats,
     deletingChatId,
     setDeletingChatId,
+    setRenamingChatId,
     deleteChat,
     isDeletingChat,
   } = useChatStore();
 
-  const deleteThisChat = pathname.split("/").pop();
+  const currentChat = pathname.split("/").pop();
 
   const handleDelete = () => {
-    if (!deleteThisChat) {
+    if (!currentChat) {
       toast.error("No chat selected to delete");
       return;
     }
 
-    setDeletingChatId(deleteThisChat);
+    setDeletingChatId(currentChat);
   };
 
   const deletingChat = chats.find((c) => c.id === deletingChatId);
@@ -113,7 +114,16 @@ export default function AIChatHeader() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => {
+              if (!currentChat) {
+                toast.error("not chat selected to perform rename");
+                return;
+              }
+              setRenamingChatId(currentChat);
+            }}
+            className="cursor-pointer"
+          >
             <FilePen /> Rename
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDelete} className="cursor-pointer">
