@@ -17,10 +17,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { logout } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export type UserPlan = "Free" | "Pro" | "Startup";
-
 export function NavUser() {
+  const router = useRouter();
   const { isMobile } = useSidebar();
 
   const user: User = {
@@ -28,6 +30,13 @@ export function NavUser() {
     plan: "Free" as UserPlan,
     avatar: "/avatars/shadcn.jpg",
     email: "abdulrafayofficial.work@gmail.com",
+  };
+
+  const handleLogout = async () => {
+    const res = await logout();
+    if (res.status === "success") {
+      router.push("/");
+    }
   };
 
   return (
@@ -74,7 +83,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

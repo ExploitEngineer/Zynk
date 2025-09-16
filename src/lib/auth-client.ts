@@ -5,14 +5,35 @@ export const authClient = createAuthClient({
 });
 
 export const signInWithGoogle = async () => {
-  await authClient.signIn.social({
-    provider: "google",
-    callbackURL: "/chat",
-  });
+  try {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/chat",
+    });
+  } catch (err) {
+    console.error("Google sign-in failed:", err);
+    return { status: "error", message: (err as Error).message };
+  }
 };
 
 export const signInWithGithub = async () => {
-  await authClient.signIn.social({
-    provider: "github",
-  });
+  try {
+    await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/chat",
+    });
+  } catch (err) {
+    console.error("GitHub sign-in failed:", err);
+    return { status: "error", message: (err as Error).message };
+  }
+};
+
+export const logout = async () => {
+  try {
+    await authClient.signOut();
+    return { status: "success" };
+  } catch (err) {
+    console.error("Logout failed:", err);
+    return { status: "error", message: (err as Error).message };
+  }
 };

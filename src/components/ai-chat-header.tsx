@@ -32,6 +32,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { logout } from "@/lib/auth-client";
 
 export default function AIChatHeader() {
   const pathname = usePathname();
@@ -63,6 +64,13 @@ export default function AIChatHeader() {
     await deleteChat(deletingChatId);
     setDeletingChatId(null);
     router.push("/chat");
+  };
+
+  const handleLogout = async () => {
+    const res = await logout();
+    if (res.status === "success") {
+      router.push("/");
+    }
   };
 
   return (
@@ -135,7 +143,7 @@ export default function AIChatHeader() {
               <Settings /> Settings
             </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
             <LogOut /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
