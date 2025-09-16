@@ -62,6 +62,8 @@ export async function DELETE(req: NextRequest) {
       });
     }
 
+    await prisma.message.deleteMany({ where: { chatId } });
+
     const chat = await prisma.chat.delete({ where: { id: chatId } });
 
     return new Response(JSON.stringify(chat), {
