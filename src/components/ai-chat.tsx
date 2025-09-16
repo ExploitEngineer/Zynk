@@ -83,6 +83,11 @@ const AIChat = () => {
     if (!currentChatId) {
       const newChatId = await createChat("new chat");
 
+      if (!newChatId) {
+        toast.error("error creating new chat");
+        return;
+      }
+
       try {
         const res = await fetch("/api/chat-name", {
           method: "POST",
