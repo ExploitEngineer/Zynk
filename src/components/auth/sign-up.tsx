@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { signUp } from "@/server/users";
 import { signUpSchema, SignUpForm } from "@/schemas/auth";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function SignUpComponent() {
   const router = useRouter();
