@@ -12,7 +12,7 @@ importers:
         specifier: ^2.0.39
         version: 2.0.44(react@19.1.0)(zod@4.1.8)
       '@prisma/client':
-        specifier: ^6.16.1
+        specifier: 6.16.1
         version: 6.16.1(prisma@6.16.1(typescript@5.9.2))(typescript@5.9.2)
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
