@@ -2,13 +2,13 @@
 
 import { auth } from "@/lib/auth";
 
-interface UserSignUp {
+interface UserCredentials {
   name: string;
   email: string;
   password: string;
 }
 
-export const signUp = async ({ name, email, password }: UserSignUp) => {
+export const signUp = async ({ name, email, password }: UserCredentials) => {
   try {
     await auth.api.signUpEmail({
       body: {
@@ -26,5 +26,20 @@ export const signUp = async ({ name, email, password }: UserSignUp) => {
       status: "error",
       message: (err as Error)?.message || "Unknown error",
     };
+  }
+};
+
+export const login = async ({
+  email,
+  password,
+}: Omit<UserCredentials, "name">) => {
+  try {
+    await auth.api.signInEmail({
+      body: { email, password },
+    });
+
+    return { status: "success" };
+  } catch (err) {
+    return { status: "error", message: "Invalid email or password" };
   }
 };
