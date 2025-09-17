@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { nextCookies } from "better-auth/next-js";
+import { sendResetPasswordEmail } from "./email";
 
 export const auth = betterAuth({
   socialProviders: {
@@ -17,6 +18,16 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendResetPasswordEmail({
+        username: user.name ?? "User",
+        userEmail: user.email,
+        resetUrl: url,
+      });
+    },
+    onPasswordReset: async ({ user }) => {
+      console.log(`Password for ${user.email} has been reset`);
+    },
   },
   database: prismaAdapter(prisma, {
     provider: "mongodb",

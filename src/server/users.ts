@@ -43,3 +43,21 @@ export const login = async ({
     return { status: "error", message: "Invalid email or password" };
   }
 };
+
+export async function resetPassword(values: {
+  password: string;
+  token: string;
+}) {
+  try {
+    await auth.api.resetPassword({
+      body: {
+        newPassword: values.password,
+        token: values.token,
+      },
+    });
+
+    return { status: "success" };
+  } catch (error: any) {
+    return { status: "error", message: error.message };
+  }
+}
