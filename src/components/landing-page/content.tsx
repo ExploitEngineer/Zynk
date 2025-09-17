@@ -9,10 +9,9 @@ export default function ContentSection() {
       <div className="relative mx-auto max-w-5xl space-y-8 px-6 md:space-y-12">
         <div className="relative h-[500px] w-full">
           <Image
-            className="rounded-(--radius) grayscale"
+            className="rounded-(--radius) object-cover grayscale"
             src="/assets/images/content.avif"
             fill
-            objectFit="cover"
             loading="lazy"
             alt="team image"
           />
