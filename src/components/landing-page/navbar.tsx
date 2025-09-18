@@ -52,7 +52,7 @@ export const Navbar = () => {
           <div
             className={cn(
               "flex items-center gap-4 py-3 lg:py-4",
-              authNav ? "justify-center" : "justify-between",
+              authNav ? "justify-start" : "justify-between",
             )}
           >
             {/* Left */}
