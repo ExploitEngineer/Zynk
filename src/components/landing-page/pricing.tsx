@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,8 +10,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { checkoutPlan } from "@/lib/auth-client";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function PricingSection() {
+  const router = useRouter();
+
+  const handleCheckout = async (slug: "pro" | "startup") => {
+    const result = await checkoutPlan(slug);
+
+    if (result.status === "unauthenticated") {
+      toast.success("Please login first");
+      return router.push("/signup");
+    }
+
+    if (result.status === "error") {
+      console.error("Checkout failed:", result.message);
+      toast.error("Something went wrong with checkout.");
+      return;
+    }
+  };
+
   return (
     <section
       id="pricing"
@@ -57,8 +78,12 @@ export default function PricingSection() {
             </CardContent>
 
             <CardFooter className="mt-auto">
-              <Button asChild variant="outline" className="w-full">
-                <Link href="">Get Started</Link>
+              <Button
+                onClick={() => router.push("/chat")}
+                variant="outline"
+                className="w-full cursor-pointer"
+              >
+                Get Started
               </Button>
             </CardFooter>
           </Card>
@@ -101,8 +126,11 @@ export default function PricingSection() {
               </CardContent>
 
               <CardFooter>
-                <Button asChild className="w-full">
-                  <Link href="">Get Started</Link>
+                <Button
+                  onClick={() => handleCheckout("pro")}
+                  className="w-full cursor-pointer"
+                >
+                  Get Started
                 </Button>
               </CardFooter>
             </div>
@@ -139,8 +167,12 @@ export default function PricingSection() {
             </CardContent>
 
             <CardFooter className="mt-auto">
-              <Button asChild variant="outline" className="w-full">
-                <Link href="">Get Started</Link>
+              <Button
+                onClick={() => handleCheckout("startup")}
+                variant="outline"
+                className="w-full cursor-pointer"
+              >
+                Get Started
               </Button>
             </CardFooter>
           </Card>

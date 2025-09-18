@@ -3,6 +3,12 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { sendResetPasswordEmail } from "./email";
+import { stripe } from "@better-auth/stripe";
+import Stripe from "stripe";
+
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-08-27.basil",
+});
 
 export const auth = betterAuth({
   socialProviders: {
@@ -32,5 +38,27 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "mongodb",
   }),
-  plugins: [nextCookies()],
+  plugins: [
+    stripe({
+      stripeClient,
+      stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+      createCustomerOnSignUp: true,
+      subscription: {
+        enabled: true,
+        plans: [
+          {
+            name: "pro",
+            priceId: "price_1S8Vdp398xbKDWRhJqjp2h4y",
+            limits: { tokens: 200000 },
+          },
+          {
+            name: "startup",
+            priceId: "price_1S8VbJ398xbKDWRhFP0odpsw",
+            limits: { tokens: 500000 },
+          },
+        ],
+      },
+    }),
+    nextCookies(),
+  ],
 });
