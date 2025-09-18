@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "../mode-toggle";
+import { Button } from "@/components/ui/button";
 
 interface MenuItems {
   name: string;
@@ -34,81 +34,119 @@ const authMenuItems: MenuItems[] = [
 type AuthPages = "signup" | "login" | "forgot-password" | undefined;
 
 export const Navbar = () => {
-  const pathname: string = usePathname();
+  const pathname: string = usePathname() || "/";
   const route: string = pathname.split("/")[1] || "";
 
   const authRoutes: AuthPages[] = ["signup", "login", "forgot-password"];
   const authNav = authRoutes.includes(route as AuthPages);
 
   const [menuState, setMenuState] = React.useState(false);
+
+  // helper to close mobile menu after click
+  const handleMobileLinkClick = () => setMenuState(false);
+
   return (
     <header>
-      <nav
-        data-state={menuState && "active"}
-        className="bg-background/50 fixed z-20 w-full border-b backdrop-blur-3xl"
-      >
-        <div className="mx-auto max-w-6xl px-6 transition-all duration-300">
+      <nav className="bg-background/70 fixed top-0 right-0 left-0 z-20 border-b backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl px-6">
           <div
             className={cn(
-              "relative flex flex-wrap items-center gap-6 py-3 lg:gap-0 lg:py-4",
-              authNav ? "!justify-center" : "!justify-between",
+              "flex items-center gap-4 py-3 lg:py-4",
+              authNav ? "justify-center" : "justify-between",
             )}
           >
-            <div className="flex w-full items-center justify-between gap-12 lg:w-auto">
-              <button
-                onClick={() => setMenuState(!menuState)}
-                aria-label={menuState == true ? "Close Menu" : "Open Menu"}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+            {/* Left */}
+            <div className="flex items-center gap-4">
+              {/* Mobile Toggle */}
+              <Button
+                onClick={() => setMenuState((s) => !s)}
+                variant="ghost"
+                size="icon"
+                className="relative z-20 cursor-pointer p-2 lg:hidden"
+                aria-expanded={menuState}
+                aria-label={menuState ? "Close menu" : "Open menu"}
               >
-                <Menu className="m-auto size-6 duration-200 in-data-[state=active]:scale-0 in-data-[state=active]:rotate-180 in-data-[state=active]:opacity-0" />
-                <X className="absolute inset-0 m-auto size-6 scale-0 -rotate-180 opacity-0 duration-200 in-data-[state=active]:scale-100 in-data-[state=active]:rotate-0 in-data-[state=active]:opacity-100" />
-              </button>
+                {!menuState ? <Menu size={20} /> : <X size={20} />}
+              </Button>
 
+              {/* Desktop Links */}
               <div className="hidden lg:block">
-                <ul className="flex gap-8 text-sm">
-                  {(authNav ? authMenuItems : menuItems).map((item, index) => (
-                    <li key={index}>
+                <ul className="flex gap-8 text-sm font-medium">
+                  {(authNav ? authMenuItems : menuItems).map((item) => (
+                    <li key={item.name}>
                       <Link
                         href={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
                       >
-                        <span>{item.name}</span>
+                        {item.name}
                       </Link>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
-            <div className="bg-background mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 in-data-[state=active]:block md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none lg:in-data-[state=active]:flex dark:shadow-none dark:lg:bg-transparent">
-              <div className="lg:hidden">
-                <ul className="space-y-6 text-base">
-                  {(authNav ? authMenuItems : menuItems).map((item, index) => (
-                    <li key={index}>
-                      <Link
-                        href={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
-                      >
-                        <span>{item.name}</span>
-                      </Link>
-                    </li>
-                  ))}
+
+            {/* Right */}
+            {!authNav && (
+              <div className="hidden items-center gap-4 lg:flex">
+                {/* ModeToggle wrapped so we can align it perfectly */}
+                <div className="flex items-center">
                   <ModeToggle />
-                </ul>
-              </div>
-              {!authNav && (
-                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                </div>
+
+                <div className="flex items-center gap-3">
                   <Button asChild variant="outline" size="sm">
-                    <Link href="/login">
-                      <span>Login</span>
-                    </Link>
+                    <Link href="/login">Login</Link>
                   </Button>
                   <Button asChild size="sm">
-                    <Link href="/signup">
-                      <span>Sign Up</span>
-                    </Link>
+                    <Link href="/signup">Sign Up</Link>
                   </Button>
                 </div>
-              )}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile dropdown (collapsible) */}
+          <div
+            className={cn(
+              "overflow-hidden transition-[max-height,opacity] duration-300 lg:hidden",
+              menuState ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0",
+            )}
+            aria-hidden={!menuState}
+          >
+            <div className="px-4 pb-6">
+              <ul className="space-y-4">
+                {(authNav ? authMenuItems : menuItems).map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      onClick={handleMobileLinkClick}
+                      className="text-muted-foreground hover:text-foreground block text-base transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
+
+                {/* Mobile row: Mode toggle + auth actions */}
+                {!authNav && (
+                  <li>
+                    <div className="mt-2 flex items-center justify-between gap-4">
+                      <div>
+                        <ModeToggle />
+                      </div>
+                      <div className="flex gap-3">
+                        <Button asChild variant="outline" size="sm">
+                          <Link href="/login">Login</Link>
+                        </Button>
+                        <Button asChild size="sm">
+                          <Link href="/signup">Sign Up</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
             </div>
           </div>
         </div>
