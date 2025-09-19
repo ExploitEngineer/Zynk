@@ -3,10 +3,8 @@ import { stripeClient } from "@better-auth/stripe/client";
 
 export const authClient = createAuthClient({
   plugins: [stripeClient({ subscription: true })],
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  baseURL: process.env.BETTER_AUTH_URL,
 });
-
-console.log("Auth base URL:", process.env.NEXT_PUBLIC_BETTER_AUTH_URL);
 
 export const signInWithGoogle = async () => {
   try {
@@ -48,6 +46,17 @@ export const checkoutPlan = async (slug: "pro" | "startup") => {
 
     if (!session.data) {
       return { status: "unauthenticated" };
+    }
+
+    const { data: subs, error: subsError } =
+      await authClient.subscription.list();
+    if (subsError) {
+      throw new Error(subsError.message);
+    }
+
+    const activeSub = subs?.find((s) => s.status === "active");
+    if (activeSub?.plan === slug) {
+      return { status: "already-on-plan" };
     }
 
     const planMap: Record<"pro" | "startup", string> = {
