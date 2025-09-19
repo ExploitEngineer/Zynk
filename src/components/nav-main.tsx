@@ -63,9 +63,18 @@ export function NavMain() {
         </SidebarMenuItem>
 
         <SidebarMenuItem>
-          <SidebarMenuButton className="!cursor-pointer" tooltip="library">
+          <SidebarMenuButton
+            className="!cursor-not-allowed opacity-60"
+            tooltip="Coming soon"
+            disabled
+          >
             <Home />
-            <span>Library</span>
+            <span className="flex items-center gap-2">
+              Library
+              <span className="rounded bg-gray-200 px-1 text-[10px] font-medium text-gray-600">
+                Soon
+              </span>
+            </span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
