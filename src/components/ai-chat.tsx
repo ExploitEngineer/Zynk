@@ -13,6 +13,7 @@ import {
   GlobeIcon,
   RefreshCcwIcon,
   CopyIcon,
+  Check,
   ThumbsUp,
   ThumbsDown,
 } from "lucide-react";
@@ -50,6 +51,7 @@ import {
 import { useChatStore } from "@/store/chat-store";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
 interface Models {
   name: string;
@@ -75,6 +77,7 @@ const AIChat = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
     if (!message.text?.trim()) return;
@@ -118,6 +121,17 @@ const AIChat = () => {
     await regenerate(model);
   };
 
+  const handleCopy = async (id: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(id);
+
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
   return (
     <section className="font-inter h-screen w-full overflow-hidden">
       <AIChatHeader />
@@ -136,53 +150,54 @@ const AIChat = () => {
                     </MessageContent>
                   </Message>
 
-                  {message.role === "assistant" &&
-                    message.id === messages.at(-1)?.id && (
-                      <Actions className="mt-1">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Action
-                              className="cursor-pointer"
-                              onClick={handleRegenerate}
-                              label="Retry"
-                            >
-                              <RefreshCcwIcon className="size-4" />
-                            </Action>
-                          </TooltipTrigger>
-                          <TooltipContent>regenerate</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Action className="cursor-pointer" label="Like">
-                              <ThumbsUp className="size-4" />
-                            </Action>
-                          </TooltipTrigger>
-                          <TooltipContent>Like</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Action className="cursor-pointer" label="DisLike">
-                              <ThumbsDown className="size-4" />
-                            </Action>
-                          </TooltipTrigger>
-                          <TooltipContent>unlike</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Action
-                              className="cursor-pointer"
-                              onClick={(): Promise<void> =>
-                                navigator.clipboard.writeText(message.text)
-                              }
-                              label="Copy"
-                            >
-                              <CopyIcon className="size-4" />
-                            </Action>
-                          </TooltipTrigger>
-                          <TooltipContent>copy</TooltipContent>
-                        </Tooltip>
-                      </Actions>
-                    )}
+                  <Actions
+                    className={cn(message.role === "user" && "justify-end")}
+                  >
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Action
+                          className="cursor-pointer"
+                          onClick={handleRegenerate}
+                          label="Retry"
+                        >
+                          <RefreshCcwIcon className="size-4" />
+                        </Action>
+                      </TooltipTrigger>
+                      <TooltipContent>regenerate</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Action className="cursor-pointer" label="Like">
+                          <ThumbsUp className="size-4" />
+                        </Action>
+                      </TooltipTrigger>
+                      <TooltipContent>Like</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Action className="cursor-pointer" label="DisLike">
+                          <ThumbsDown className="size-4" />
+                        </Action>
+                      </TooltipTrigger>
+                      <TooltipContent>unlike</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Action
+                          className="cursor-pointer"
+                          onClick={() => handleCopy(message.id, message.text)}
+                          label="Copy"
+                        >
+                          {copiedId === message.id ? (
+                            <Check className="size-4 text-green-400" />
+                          ) : (
+                            <CopyIcon className="size-4" />
+                          )}
+                        </Action>
+                      </TooltipTrigger>
+                      <TooltipContent>copy</TooltipContent>
+                    </Tooltip>
+                  </Actions>
                 </div>
               ))}
 
