@@ -1,115 +1,133 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URI")
+    provider = "mongodb"
+    url      = env("MONGODB_URI")
 }
 
 model User {
-  id               String    @id @map("_id")
-  name             String
-  email            String
-  emailVerified    Boolean   @default(false)
-  image            String?
-  stripeCustomerId String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @default(now()) @updatedAt
-  sessions         Session[]
-  accounts         Account[]
-  chats            Chat[]
+    id               String         @id @map("_id")
+    name             String
+    email            String
+    emailVerified    Boolean        @default(false)
+    image            String?
+    stripeCustomerId String?
+    createdAt        DateTime       @default(now())
+    updatedAt        DateTime       @default(now()) @updatedAt
+    sessions         Session[]
+    accounts         Account[]
+    chats            Chat[]
+    usages           Usage[]
+    subscription     Subscription[]
 
-  @@unique([email])
-  @@map("user")
+    @@unique([email])
+    @@map("user")
 }
 
 model Session {
-  id        String   @id @map("_id")
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        String   @id @map("_id")
+    expiresAt DateTime
+    token     String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    ipAddress String?
+    userAgent String?
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
-  @@map("session")
+    @@unique([token])
+    @@map("session")
 }
 
 model Account {
-  id                    String    @id @map("_id")
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+    id                    String    @id @map("_id")
+    accountId             String
+    providerId            String
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?
+    refreshToken          String?
+    idToken               String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
 
-  @@map("account")
+    @@map("account")
 }
 
 model Verification {
-  id         String   @id @map("_id")
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+    id         String   @id @map("_id")
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now()) @updatedAt
 
-  @@map("verification")
+    @@map("verification")
 }
 
 model Subscription {
-  id                   String    @id @map("_id")
-  plan                 String
-  referenceId          String
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
-  status               String
-  periodStart          DateTime?
-  periodEnd            DateTime?
-  cancelAtPeriodEnd    Boolean?  @default(false)
-  seats                Int?
-  trialStart           DateTime?
-  trialEnd             DateTime?
+    id                   String    @id @map("_id")
+    plan                 String
+    referenceId          String
+    stripeCustomerId     String?
+    stripeSubscriptionId String?
+    status               String
+    periodStart          DateTime?
+    periodEnd            DateTime?
+    cancelAtPeriodEnd    Boolean?  @default(false)
+    seats                Int?
+    trialStart           DateTime?
+    trialEnd             DateTime?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  @@map("subscription")
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@map("subscription")
 }
 
 model Chat {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  title          String
-  lastResponseId String?
-  messages       Message[]
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  user           User      @relation(fields: [userId], references: [id])
-  userId         String
+    id             String    @id @default(auto()) @map("_id") @db.ObjectId
+    title          String
+    lastResponseId String?
+    messages       Message[]
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
+    user           User      @relation(fields: [userId], references: [id])
+    userId         String
 
-  @@map("chat")
+    @@map("chat")
 }
 
 model Message {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  role      String
-  text      String
-  chatId    String   @db.ObjectId
-  chat      Chat     @relation(fields: [chatId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    role      String
+    text      String
+    chatId    String   @db.ObjectId
+    chat      Chat     @relation(fields: [chatId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  @@map("message")
+    @@map("message")
+}
+
+model Usage {
+    id               String   @id @default(auto()) @map("_id") @db.ObjectId
+    userId           String
+    model            String
+    promptTokens     Int
+    completionTokens Int
+    totalTokens      Int
+    createdAt        DateTime @default(now())
+    user             User     @relation(fields: [userId], references: [id])
+
+    @@map("usage")
 }
