@@ -1,6 +1,11 @@
 "use client";
 
-import { LogOut, Sparkles, Settings, User as UserIcon } from "lucide-react";
+import {
+  LogOut,
+  Sparkles,
+  ChartNoAxesCombined,
+  User as UserIcon,
+} from "lucide-react";
 import { User } from "@/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,11 +24,14 @@ import {
 } from "@/components/ui/sidebar";
 import { logout } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { TokenUsageDialog } from "./usage/token-usage-dialog";
 
 export type UserPlan = "Free" | "Pro" | "Startup";
 export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
+  const [usageOpen, setUsageOpen] = useState<boolean>(false);
 
   const user: User = {
     name: "shadcn",
@@ -77,9 +85,12 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
-                <Settings />
-                Settings
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => setUsageOpen(true)}
+              >
+                <ChartNoAxesCombined />
+                Usage
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -90,6 +101,9 @@ export function NavUser() {
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+
+      {/* Usage Dialog */}
+      <TokenUsageDialog open={usageOpen} onOpenChange={setUsageOpen} />
     </SidebarMenu>
   );
 }
