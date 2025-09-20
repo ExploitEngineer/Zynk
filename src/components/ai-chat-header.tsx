@@ -3,7 +3,6 @@
 import {
   ChevronDown,
   Sparkles,
-  Settings,
   Ellipsis,
   LogOut,
   Trash2,
@@ -33,6 +32,7 @@ import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { logout } from "@/lib/auth-client";
+import Link from "next/link";
 
 export default function AIChatHeader() {
   const pathname = usePathname();
@@ -90,14 +90,11 @@ export default function AIChatHeader() {
           sideOffset={4}
         >
           <DropdownMenuGroup>
-            <DropdownMenuItem className="cursor-pointer">
-              <Sparkles /> Upgrade to Pro
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuGroup>
-            <DropdownMenuItem className="cursor-pointer">
-              <Settings /> Settings
-            </DropdownMenuItem>
+            <Link href="/#pricing">
+              <DropdownMenuItem className="cursor-pointer">
+                <Sparkles /> Upgrade to Pro
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -117,9 +114,11 @@ export default function AIChatHeader() {
           sideOffset={4}
         >
           <DropdownMenuGroup>
-            <DropdownMenuItem className="cursor-pointer">
-              <Sparkles /> Upgrade to Pro
-            </DropdownMenuItem>
+            <Link href="/#pricing">
+              <DropdownMenuItem className="cursor-pointer">
+                <Sparkles /> Upgrade to Pro
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -138,11 +137,6 @@ export default function AIChatHeader() {
             <Trash2 color="red" /> <span className="text-red-500">Delete</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem className="cursor-pointer">
-              <Settings /> Settings
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
             <LogOut /> Logout
           </DropdownMenuItem>
