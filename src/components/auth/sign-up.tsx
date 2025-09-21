@@ -20,8 +20,10 @@ import { signUp } from "@/server/users";
 import { signInWithGoogle, signInWithGithub } from "@/lib/auth-client";
 import { signUpSchema, SignUpForm } from "@/schemas/auth";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 export default function SignUpComponent() {
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
 
   const form = useForm<SignUpForm>({
@@ -88,7 +90,11 @@ export default function SignUpComponent() {
                 variant="outline"
               >
                 <Image
-                  src="assets/images/github-white.svg"
+                  src={
+                    resolvedTheme === "dark"
+                      ? "/assets/images/github-white.svg"
+                      : "/assets/images/github-mark.png"
+                  }
                   width={18}
                   height={17.4}
                   alt="github image"
