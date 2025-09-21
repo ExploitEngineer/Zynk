@@ -43,7 +43,6 @@ export const logout = async () => {
 export const checkoutPlan = async (slug: "pro" | "startup") => {
   try {
     const session = await authClient.getSession();
-
     if (!session.data) {
       return { status: "unauthenticated" };
     }
@@ -55,27 +54,26 @@ export const checkoutPlan = async (slug: "pro" | "startup") => {
     }
 
     const activeSub = subs?.find((s) => s.status === "active");
+
     if (activeSub?.plan === slug) {
       return { status: "already-on-plan" };
     }
 
-    const planMap: Record<"pro" | "startup", string> = {
-      pro: "pro",
-      startup: "startup",
-    };
-
-    const { error } = await authClient.subscription.upgrade({
-      plan: planMap[slug],
+    const upgradeResult = await authClient.subscription.upgrade({
+      plan: slug,
+      subscriptionId: activeSub?.id,
       successUrl: "/chat",
       cancelUrl: "/#pricing",
       disableRedirect: false,
     });
 
-    if (error) {
-      throw new Error(error.message);
+    if (upgradeResult.error) {
+      return { status: "error", message: upgradeResult.error.message };
     }
+    const { data: updatedSubs } = await authClient.subscription.list();
+    const newActive = updatedSubs?.find((s) => s.status === "active");
 
-    return { success: "success" };
+    return { status: "success", activePlan: newActive?.plan };
   } catch (err) {
     console.error(`Checkout failed for ${slug}:`, err);
     return { status: "error", message: (err as Error).message };

@@ -42,18 +42,18 @@ export const auth = betterAuth({
     stripe({
       stripeClient,
       stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
-      createCustomerOnSignUp: false,
+      createCustomerOnSignUp: true,
       subscription: {
         enabled: true,
         plans: [
           {
             name: "pro",
-            priceId: "price_1S8Vdp398xbKDWRhJqjp2h4y",
+            priceId: process.env.STRIPE_PRO_PRICE_ID,
             limits: { tokens: 200000 },
           },
           {
             name: "startup",
-            priceId: "price_1S8VbJ398xbKDWRhFP0odpsw",
+            priceId: process.env.STRIPE_STARTUP_PRICE_ID,
             limits: { tokens: 500000 },
           },
         ],

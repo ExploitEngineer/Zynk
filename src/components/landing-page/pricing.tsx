@@ -25,10 +25,18 @@ export default function PricingSection() {
       return router.push("/signup");
     }
 
-    if (result.status === "error") {
-      console.error("Checkout failed:", result.message);
-      toast.error("Something went wrong with checkout.");
+    if (result.status === "already-on-plan") {
+      toast.success("You are already on this plan");
       return;
+    }
+
+    if (result.status === "error") {
+      toast.error(`${result.message || "Something went wrong"}`);
+      return;
+    }
+
+    if (result.status === "success") {
+      toast.success("Redirecting to checkout...");
     }
   };
 
