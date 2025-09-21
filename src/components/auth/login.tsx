@@ -20,8 +20,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signInWithGoogle, signInWithGithub } from "@/lib/auth-client";
+import { useTheme } from "next-themes";
 
 export default function LoginComponent() {
+  const { resolvedTheme } = useTheme();
   const router = useRouter();
 
   const form = useForm<LoginForm>({
@@ -80,7 +82,11 @@ export default function LoginComponent() {
                 className="cursor-pointer"
               >
                 <Image
-                  src="/assets/images/github-white.svg"
+                  src={
+                    resolvedTheme === "dark"
+                      ? "/assets/images/github-white.svg"
+                      : "/assets/images/github-mark.png"
+                  }
                   width={18}
                   height={17.5}
                   alt="github image"
