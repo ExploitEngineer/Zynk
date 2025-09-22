@@ -48,10 +48,10 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
+import { FeedbackDialog } from "./feedback-dialog";
 import { useChatStore } from "@/store/chat-store";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { cn } from "@/lib/utils";
 
 interface Models {
   name: string;
@@ -73,11 +73,13 @@ const AIChat = () => {
     sendMessage,
     renameChat,
     regenerate,
+    setCurrentMessageId,
   } = useChatStore();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
 
   const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
     if (!message.text?.trim()) return;
@@ -117,6 +119,23 @@ const AIChat = () => {
     await sendMessage(message.text, model);
   };
 
+  const handleLike = (messageId: string) => {
+    toast.promise(
+      setCurrentMessageId(messageId, "like").then((updated) => {
+        if (updated.like) {
+          return "Liked response!";
+        } else {
+          return "Removed like!";
+        }
+      }),
+      {
+        loading: "Saving...",
+        success: (msg) => msg,
+        error: <b>Could not save reaction.</b>,
+      },
+    );
+  };
+
   const handleRegenerate = async (): Promise<void> => {
     await regenerate(model);
   };
@@ -125,6 +144,7 @@ const AIChat = () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedId(id);
+      toast.success("Copied to clipboard!");
 
       setTimeout(() => setCopiedId(null), 2000);
     } catch (err) {
@@ -150,54 +170,73 @@ const AIChat = () => {
                     </MessageContent>
                   </Message>
 
-                  <Actions
-                    className={cn(message.role === "user" && "justify-end")}
-                  >
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Action
-                          className="cursor-pointer"
-                          onClick={handleRegenerate}
-                          label="Retry"
-                        >
-                          <RefreshCcwIcon className="size-4" />
-                        </Action>
-                      </TooltipTrigger>
-                      <TooltipContent>regenerate</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Action className="cursor-pointer" label="Like">
-                          <ThumbsUp className="size-4" />
-                        </Action>
-                      </TooltipTrigger>
-                      <TooltipContent>Like</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Action className="cursor-pointer" label="DisLike">
-                          <ThumbsDown className="size-4" />
-                        </Action>
-                      </TooltipTrigger>
-                      <TooltipContent>unlike</TooltipContent>
-                    </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Action
-                          className="cursor-pointer"
-                          onClick={() => handleCopy(message.id, message.text)}
-                          label="Copy"
-                        >
-                          {copiedId === message.id ? (
-                            <Check className="size-4 text-green-400" />
-                          ) : (
-                            <CopyIcon className="size-4" />
-                          )}
-                        </Action>
-                      </TooltipTrigger>
-                      <TooltipContent>copy</TooltipContent>
-                    </Tooltip>
-                  </Actions>
+                  {message.role === "assistant" && (
+                    <Actions>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Action
+                            className="cursor-pointer"
+                            onClick={handleRegenerate}
+                            label="Retry"
+                          >
+                            <RefreshCcwIcon className="size-4" />
+                          </Action>
+                        </TooltipTrigger>
+                        <TooltipContent>regenerate</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Action
+                            className="cursor-pointer"
+                            label="Like"
+                            onClick={() => handleLike(message.id)}
+                          >
+                            <ThumbsUp
+                              fill={message.like ? "currentColor" : "none"}
+                              className="size-4"
+                            />
+                          </Action>
+                        </TooltipTrigger>
+                        <TooltipContent>Like</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Action
+                            className="cursor-pointer"
+                            label="feedback"
+                            onClick={() => setFeedbackDialogOpen(true)}
+                          >
+                            <ThumbsDown className="size-4" />
+                          </Action>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          Provide Response Feedback
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <FeedbackDialog
+                        open={feedbackDialogOpen}
+                        onOpenChange={setFeedbackDialogOpen}
+                        messageId={message.id}
+                      />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Action
+                            className="cursor-pointer"
+                            onClick={() => handleCopy(message.id, message.text)}
+                            label="Copy"
+                          >
+                            {copiedId === message.id ? (
+                              <Check className="size-4 text-green-400" />
+                            ) : (
+                              <CopyIcon className="size-4" />
+                            )}
+                          </Action>
+                        </TooltipTrigger>
+                        <TooltipContent>copy</TooltipContent>
+                      </Tooltip>
+                    </Actions>
+                  )}
                 </div>
               ))}
 

@@ -22,6 +22,11 @@ interface ChatStore {
   setCurrentChat: (chatId: string) => Promise<void>;
   sendMessage: (text: string, model?: string) => Promise<void>;
   regenerate: (model?: string) => Promise<void>;
+  setCurrentMessageId: (
+    messageId: string,
+    reaction: "like" | "feedback",
+    feedback?: string,
+  ) => Promise<ChatMessage>;
 }
 
 export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
@@ -81,6 +86,31 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     } catch (err) {
       console.error("createChat error", err);
       toast.error("Failed to create chat");
+    }
+  },
+
+  setCurrentMessageId: async (messageId, reaction, feedback) => {
+    try {
+      const res = await fetch("/api/reaction", {
+        method: "POST",
+        body: JSON.stringify({ messageId, reaction, feedback }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error("Error adding reaction");
+
+      const updated = await res.json();
+
+      set((state) => ({
+        messages: state.messages.map((m) => (m.id === messageId ? updated : m)),
+      }));
+
+      return updated;
+    } catch (err) {
+      console.log(err);
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
     }
   },
 
