@@ -21,10 +21,12 @@ import { signInWithGoogle, signInWithGithub } from "@/lib/auth-client";
 import { signUpSchema, SignUpForm } from "@/schemas/auth";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
 
 export default function SignUpComponent() {
-  const { resolvedTheme } = useTheme();
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState<boolean>(false);
 
   const form = useForm<SignUpForm>({
     resolver: zodResolver(signUpSchema),
@@ -50,6 +52,14 @@ export default function SignUpComponent() {
       toast.error("Something went wrong");
     }
   };
+
+  useEffect(() => {
+    setMounted(true);
+  });
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <section className="flex min-h-screen bg-transparent px-4 py-16 md:py-32">

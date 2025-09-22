@@ -20,11 +20,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signInWithGoogle, signInWithGithub } from "@/lib/auth-client";
+import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
 export default function LoginComponent() {
-  const { resolvedTheme } = useTheme();
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState<boolean>(false);
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -44,6 +46,14 @@ export default function LoginComponent() {
       toast.error("Something went wrong!");
     }
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <section className="flex min-h-screen bg-transparent px-4 py-16 md:py-32">
