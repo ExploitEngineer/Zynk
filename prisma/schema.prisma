@@ -106,6 +106,8 @@ model Message {
   text      String
   chatId    String   @db.ObjectId
   chat      Chat     @relation(fields: [chatId], references: [id])
+  like      Boolean? @default(false)
+  feedback  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
