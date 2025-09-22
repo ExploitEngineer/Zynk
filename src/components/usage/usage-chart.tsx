@@ -1,6 +1,6 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { useTokenStore } from "@/store/token-store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -57,9 +57,15 @@ export function TokenUsageChart() {
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
-              tickLine={false}
-              axisLine={false}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
+            />
+            <YAxis
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+              domain={[0, tokenLimit]}
             />
             <ChartTooltip
               cursor={false}
@@ -76,7 +82,10 @@ export function TokenUsageChart() {
             <defs>
               <linearGradient id="colorUv" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#0B84CE" stopOpacity={0.8} />
-                <stop offset="50%" stopColor="#7107C6" stopOpacity={0.8} />
+                <stop offset="20%" stopColor="#224CD1" stopOpacity={0.8} />
+                <stop offset="40%" stopColor="#3A11C7" stopOpacity={0.8} />
+                <stop offset="60%" stopColor="#7107C6" stopOpacity={0.8} />
+                <stop offset="80%" stopColor="#C900BD" stopOpacity={0.8} />
                 <stop offset="100%" stopColor="#D80155" stopOpacity={0.8} />
               </linearGradient>
               <filter
