@@ -3,6 +3,6 @@ import type { UserPlan } from "@/components/nav-user";
 export interface User {
   name: string;
   plan: UserPlan;
-  avatar: string;
+  image?: string | null;
   email: string;
 }

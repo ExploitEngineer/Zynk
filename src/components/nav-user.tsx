@@ -6,7 +6,6 @@ import {
   ChartNoAxesCombined,
   User as UserIcon,
 } from "lucide-react";
-import { User } from "@/types/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -24,21 +23,17 @@ import {
 } from "@/components/ui/sidebar";
 import { logout } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TokenUsageDialog } from "./usage/token-usage-dialog";
+import { useAuthStore } from "@/store/auth-store";
 
 export type UserPlan = "Free" | "Pro" | "Startup";
+
 export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
   const [usageOpen, setUsageOpen] = useState<boolean>(false);
-
-  const user: User = {
-    name: "shadcn",
-    plan: "Free" as UserPlan,
-    avatar: "/avatars/shadcn.jpg",
-    email: "abdulrafayofficial.work@gmail.com",
-  };
+  const { user, fetchUser } = useAuthStore();
 
   const handleLogout = async () => {
     const res = await logout();
@@ -46,6 +41,14 @@ export function NavUser() {
       router.push("/");
     }
   };
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <SidebarMenu>
@@ -57,8 +60,11 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={user.image ?? ""} alt={user.name ?? "User"} />
+                <AvatarFallback className="rounded-lg">
+                  {" "}
+                  {user.name?.charAt(0) ?? "U"}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
