@@ -46,8 +46,8 @@ export async function GET(req: Request): Promise<Response> {
       tokens,
     }));
 
-    let tokenLimit = 10000;
-    let currentPlan = "free";
+    let tokenLimit = 0;
+    let currentPlan = "none";
 
     try {
       const subsArr = await auth.api.listActiveSubscriptions({
@@ -55,6 +55,10 @@ export async function GET(req: Request): Promise<Response> {
       });
       if (Array.isArray(subsArr)) {
         for (const p of subsArr) {
+          if (p.plan === "free") {
+            tokenLimit = 10000;
+            currentPlan = "free";
+          }
           if (p.plan === "pro") {
             tokenLimit = 210000;
             currentPlan = "pro";

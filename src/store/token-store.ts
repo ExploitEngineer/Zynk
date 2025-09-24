@@ -19,7 +19,7 @@ export const useTokenStore = create<TokenStore>((set) => ({
   usageByDay: [],
   totalUsed: 0,
   tokenLimit: 0,
-  currentPlan: "free",
+  currentPlan: "none",
   loading: false,
   error: null,
 
@@ -34,7 +34,7 @@ export const useTokenStore = create<TokenStore>((set) => ({
         usageByDay: Array.isArray(data.usageByDay) ? data.usageByDay : [],
         totalUsed: data.totalUsed ?? 0,
         tokenLimit: data.tokenLimit ?? 0,
-        currentPlan: data.currentPlan ?? "free",
+        currentPlan: data.currentPlan ?? "none",
         loading: false,
       });
     } catch (err: any) {
