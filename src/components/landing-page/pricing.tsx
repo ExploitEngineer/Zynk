@@ -13,15 +13,17 @@ import { Check } from "lucide-react";
 import { checkoutPlan } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth-store";
+import { useTokenStore } from "@/store/token-store";
 
 export default function PricingSection() {
   const router = useRouter();
 
-  const handleCheckout = async (slug: "pro" | "startup") => {
+  const handleCheckout = async (slug: "free" | "pro" | "startup") => {
     const result = await checkoutPlan(slug);
 
     if (result.status === "unauthenticated") {
-      toast.success("Please login first");
+      toast.error("Please login first");
       return router.push("/signup");
     }
 
@@ -31,12 +33,14 @@ export default function PricingSection() {
     }
 
     if (result.status === "error") {
-      toast.error(`${result.message || "Something went wrong"}`);
+      toast.error(result.message || "Something went wrong");
       return;
     }
 
     if (result.status === "success") {
       toast.success("Redirecting to checkout...");
+      useAuthStore().fetchUser();
+      useTokenStore().fetchUsage();
     }
   };
 
@@ -87,7 +91,7 @@ export default function PricingSection() {
 
             <CardFooter className="mt-auto">
               <Button
-                onClick={() => router.push("/chat")}
+                onClick={() => handleCheckout("free")}
                 variant="outline"
                 className="w-full cursor-pointer"
               >

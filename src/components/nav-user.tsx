@@ -27,7 +27,7 @@ import { useState, useEffect } from "react";
 import { TokenUsageDialog } from "./usage/token-usage-dialog";
 import { useAuthStore } from "@/store/auth-store";
 
-export type UserPlan = "Free" | "Pro" | "Startup";
+export type UserPlan = "Free" | "Pro" | "Startup" | "None";
 
 export function NavUser() {
   const router = useRouter();

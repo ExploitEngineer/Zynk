@@ -16,7 +16,6 @@ model User {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @default(now()) @updatedAt
   stripeCustomerId String?
-  plan             String    @default("Free")
   sessions         Session[]
   accounts         Account[]
   chats            Chat[]
@@ -73,7 +72,7 @@ model Verification {
 
 model Subscription {
   id                   String    @id @map("_id")
-  plan                 String
+  plan                 String    @default("none")
   referenceId          String
   stripeCustomerId     String?
   stripeSubscriptionId String?
@@ -84,6 +83,11 @@ model Subscription {
   trialEnd             DateTime?
   cancelAtPeriodEnd    Boolean?  @default(false)
   seats                Int?
+
+  tokenBalance Int       @default(0)
+  lastReset    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@map("subscription")
 }

@@ -3,11 +3,12 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { sendResetPasswordEmail } from "./email";
+import { getPlanByName, PLANS } from "./plans";
 import { stripe } from "@better-auth/stripe";
 import Stripe from "stripe";
 
 const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-08-27.basil",
+  apiVersion: "2025-02-24.acacia" as any,
 });
 
 export const auth = betterAuth({
@@ -46,18 +47,43 @@ export const auth = betterAuth({
       createCustomerOnSignUp: false,
       subscription: {
         enabled: true,
-        plans: [
-          {
-            name: "pro",
-            priceId: process.env.STRIPE_PRO_PRICE_ID,
-            limits: { tokens: 200000 },
-          },
-          {
-            name: "startup",
-            priceId: process.env.STRIPE_STARTUP_PRICE_ID,
-            limits: { tokens: 500000 },
-          },
-        ],
+        plans: PLANS,
+        onSubscriptionComplete: async ({ subscription, plan }) => {
+          const oldSub = await prisma.subscription.findFirst({
+            where: { referenceId: subscription.referenceId, status: "active" },
+          });
+
+          let tokens = plan.limits?.tokens ?? 0;
+
+          if (oldSub) {
+            if (oldSub.plan === "free") {
+              tokens += oldSub.tokenBalance ?? 0;
+            } else {
+              const oldPlanTokens =
+                getPlanByName(oldSub.plan)?.limits?.tokens ?? 0;
+              const usedTokens = oldPlanTokens - (oldSub.tokenBalance ?? 0);
+              tokens = Math.max(tokens - usedTokens, 0);
+            }
+          }
+
+          await prisma.subscription.update({
+            where: { id: subscription.id },
+            data: { tokenBalance: tokens, lastReset: new Date() },
+          });
+        },
+        onSubscriptionUpdate: async ({ subscription, plan }: any) => {
+          const now = new Date();
+          const lastReset = subscription.lastReset ?? subscription.createdAt;
+          const oneMonthLater = new Date(lastReset);
+          oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+
+          if (now >= oneMonthLater) {
+            await prisma.subscription.update({
+              where: { id: subscription.id },
+              data: { tokenBalance: plan.limits.tokens, lastReset: now },
+            });
+          }
+        },
       },
     }),
     nextCookies(),

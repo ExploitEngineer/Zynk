@@ -40,13 +40,14 @@ export const logout = async () => {
   }
 };
 
-export const checkoutPlan = async (slug: "pro" | "startup") => {
+export const checkoutPlan = async (slug: "free" | "pro" | "startup") => {
   try {
     const session = await authClient.getSession();
     if (!session.data) {
       return { status: "unauthenticated" };
     }
 
+    // Get current subscriptions
     const { data: subs, error: subsError } =
       await authClient.subscription.list();
     if (subsError) {
@@ -55,25 +56,31 @@ export const checkoutPlan = async (slug: "pro" | "startup") => {
 
     const activeSub = subs?.find((s) => s.status === "active");
 
+    // Already on same plan
     if (activeSub?.plan === slug) {
       return { status: "already-on-plan" };
     }
 
-    const upgradeResult = await authClient.subscription.upgrade({
+    // Cancel the current active subscription before creating a new one
+    if (activeSub) {
+      await authClient.subscription.cancel({
+        subscriptionId: activeSub.id,
+        returnUrl: "/",
+      });
+    }
+
+    const newSub = await authClient.subscription.upgrade({
       plan: slug,
-      subscriptionId: activeSub?.id,
       successUrl: "/chat",
       cancelUrl: "/#pricing",
       disableRedirect: false,
     });
 
-    if (upgradeResult.error) {
-      return { status: "error", message: upgradeResult.error.message };
+    if (newSub.error) {
+      return { status: "error", message: newSub.error.message };
     }
-    const { data: updatedSubs } = await authClient.subscription.list();
-    const newActive = updatedSubs?.find((s) => s.status === "active");
 
-    return { status: "success", activePlan: newActive?.plan };
+    return { status: "success" };
   } catch (err) {
     console.error(`Checkout failed for ${slug}:`, err);
     return { status: "error", message: (err as Error).message };

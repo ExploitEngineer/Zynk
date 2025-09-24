@@ -16,43 +16,8 @@ export async function POST(req: Request): Promise<Response> {
     if (!session?.user) {
       return new Response("Unauthorized", { status: 401 });
     }
+
     const userId = session.user.id;
-
-    let activePlans: Array<{ plan: string }> = [];
-    try {
-      const subsArr = await auth.api.listActiveSubscriptions({
-        headers: req.headers,
-      });
-      activePlans = Array.isArray(subsArr) ? subsArr : [];
-    } catch (err) {
-      console.error("listActiveSubscriptions error:", err);
-    }
-
-    let tokenLimit = 10000;
-    let currentPlan = "free";
-    for (const p of activePlans) {
-      if (p.plan === "pro") {
-        tokenLimit += 200000;
-        currentPlan = "pro";
-      }
-      if (p.plan === "startup") {
-        tokenLimit += 500000;
-        currentPlan = "startup";
-      }
-    }
-
-    const agg = await prisma.usage.aggregate({
-      _sum: { totalTokens: true },
-      where: { userId },
-    });
-
-    const tokensUsed = agg._sum.totalTokens ?? 0;
-    if (tokensUsed >= tokenLimit) {
-      return new Response(
-        JSON.stringify({ error: "Token limit reached. Please upgrade." }),
-        { status: 403, headers: { "Content-Type": "application/json" } },
-      );
-    }
 
     const chat = await prisma.chat.findUnique({
       where: { id: chatId },
@@ -112,14 +77,32 @@ export async function POST(req: Request): Promise<Response> {
             data: { lastResponseId: newResponseId || chat.lastResponseId },
           });
 
+          const totalUsed = promptTokens + completionTokens;
           await prisma.usage.create({
             data: {
               userId,
               model,
               promptTokens,
               completionTokens,
-              totalTokens: promptTokens + completionTokens,
+              totalTokens: totalUsed,
             },
+          });
+
+          const activeSub = await prisma.subscription.findFirst({
+            where: { id: userId, status: "active" },
+          });
+
+          if (!activeSub) {
+            throw new Error("No active subscription found");
+          }
+
+          if (activeSub.tokenBalance < totalUsed) {
+            throw new Error("Not enough tokens left in your plan");
+          }
+
+          await prisma.subscription.update({
+            where: { id: activeSub.id },
+            data: { tokenBalance: { decrement: totalUsed } },
           });
         } catch (err) {
           controller.error(err);
