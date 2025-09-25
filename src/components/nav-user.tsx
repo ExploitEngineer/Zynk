@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { TokenUsageDialog } from "./usage/token-usage-dialog";
 import { useAuthStore } from "@/store/auth-store";
+import Link from "next/link";
 
 export type UserPlan = "Free" | "Pro" | "Startup" | "None";
 
@@ -84,12 +85,14 @@ export function NavUser() {
                 {user.email}
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            <Link href="/#pricing">
+              <DropdownMenuGroup>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Sparkles />
+                  Upgrade Plan
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </Link>
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="cursor-pointer"

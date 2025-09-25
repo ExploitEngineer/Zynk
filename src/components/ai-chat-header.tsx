@@ -92,7 +92,7 @@ export default function AIChatHeader() {
           <DropdownMenuGroup>
             <Link href="/#pricing">
               <DropdownMenuItem className="cursor-pointer">
-                <Sparkles /> Upgrade to Pro
+                <Sparkles /> Upgrade Plan
               </DropdownMenuItem>
             </Link>
           </DropdownMenuGroup>
@@ -116,7 +116,7 @@ export default function AIChatHeader() {
           <DropdownMenuGroup>
             <Link href="/#pricing">
               <DropdownMenuItem className="cursor-pointer">
-                <Sparkles /> Upgrade to Pro
+                <Sparkles /> Upgrade Plan
               </DropdownMenuItem>
             </Link>
           </DropdownMenuGroup>
