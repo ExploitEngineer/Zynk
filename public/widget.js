@@ -43,7 +43,7 @@
   document.body.appendChild(button);
 
   const iframe = document.createElement("iframe");
-  iframe.src = "http://localhost:3000/chat";
+  iframe.src = "http://localhost:3000/widget-chat";
   iframe.className = "chat-iframe chat-hidden";
   iframe.style.position = "fixed";
   iframe.style.bottom = "90px";
