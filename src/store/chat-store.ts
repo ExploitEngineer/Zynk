@@ -27,6 +27,7 @@ interface ChatStore {
     reaction: "like" | "feedback",
     feedback?: string,
   ) => Promise<ChatMessage>;
+  checkSubscription: () => Promise<string | null>;
 }
 
 export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
@@ -56,6 +57,25 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
       );
     } catch (err) {
       console.error("fetchChats error", err);
+    }
+  },
+
+  checkSubscription: async () => {
+    try {
+      const res = await fetch("/api/subscription");
+
+      if (!res.ok) {
+        const errText = await res.text();
+        toast.error(errText || "Subscription check failed");
+        throw new Error(errText);
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (err: any) {
+      console.error("checkSubscription error:", err);
+      toast.error(err.message || "Something went wrong");
+      return null;
     }
   },
 
@@ -233,6 +253,7 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
 
       if (!res.ok) {
         const errText = await res.text();
+        toast.error(errText);
         throw new Error(errText || "OpenAI request failed");
       }
 

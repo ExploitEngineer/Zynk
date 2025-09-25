@@ -74,6 +74,7 @@ const AIChat = () => {
     renameChat,
     regenerate,
     setCurrentMessageId,
+    checkSubscription,
   } = useChatStore();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
@@ -82,41 +83,50 @@ const AIChat = () => {
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
 
   const handleSubmit = async (message: PromptInputMessage): Promise<void> => {
-    if (!message.text?.trim()) return;
-    setInput("");
+    try {
+      if (!message.text?.trim()) return;
+      setInput("");
 
-    if (!currentChatId) {
-      const newChatId = await createChat("new chat");
-
-      if (!newChatId) {
-        toast.error("error creating new chat");
+      const sub = await checkSubscription();
+      if (!sub) {
         return;
       }
 
-      router.push(`/chat/${newChatId}`);
+      if (!currentChatId) {
+        const newChatId = await createChat("new chat");
+        if (!newChatId) {
+          toast.error("Error creating new chat");
+          return;
+        }
 
-      try {
-        const res = await fetch("/api/chat-name", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: message.text }),
-        });
+        router.push(`/chat/${newChatId}`);
 
-        if (!res.ok) throw new Error(await res.text());
+        try {
+          const res = await fetch("/api/chat-name", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message.text }),
+          });
 
-        const data = await res.json();
-        const title = data?.title || "new chat";
-        await renameChat(newChatId, title);
-      } catch (err) {
-        toast.error("chat-name generation failed");
-        console.error(err);
+          if (!res.ok) throw new Error(await res.text());
+
+          const data = await res.json();
+          const title = data?.title || "new chat";
+          await renameChat(newChatId, title);
+        } catch (err) {
+          console.error("chat-name generation failed", err);
+          toast.error("Chat-name generation failed");
+        }
+
+        await sendMessage(message.text, model);
+        return;
       }
 
       await sendMessage(message.text, model);
-      return;
+    } catch (err: any) {
+      console.error("handleSubmit error:", err);
+      toast.error(err.message || "Something went wrong while submitting");
     }
-
-    await sendMessage(message.text, model);
   };
 
   const handleLike = (messageId: string) => {
