@@ -153,7 +153,7 @@ export default function AIChatHeader() {
             <DialogTitle>Delete Chat</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete this chat?{" "}
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-black dark:text-white">
                 {deletingChat?.title ?? "Unknown Chat"}
               </span>
             </DialogDescription>

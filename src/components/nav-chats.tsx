@@ -136,7 +136,7 @@ export function NavChats() {
             <DialogTitle>Delete Chat</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete the chat{" "}
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-black dark:text-white">
                 {chats.find((c) => c.id === deletingChatId)?.title ??
                   "Unknown chat"}
               </span>
