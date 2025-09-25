@@ -9,15 +9,19 @@ export async function GET(req: Request): Promise<Response> {
     }
 
     const sub = await prisma.subscription.findFirst({
-      where: { id: session.user.id, status: "active" },
+      where: { referenceId: session.user.id, status: "active" },
     });
 
-    if (!sub || sub.plan === "none") {
-      return new Response("No active plan", { status: 403 });
+    if (!sub) {
+      return new Response("No subscription found", { status: 403 });
+    }
+
+    if (sub.plan.toLowerCase() === "none") {
+      return new Response("You do not have an active plan", { status: 403 });
     }
 
     if (sub.tokenBalance <= 0) {
-      return new Response("Not enough tokens", { status: 403 });
+      return new Response("Not enough tokens in your plan", { status: 403 });
     }
 
     return new Response(JSON.stringify({ ok: true }), {

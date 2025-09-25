@@ -20,15 +20,14 @@ export async function POST(req: Request): Promise<Response> {
     const userId = session.user.id;
 
     const activeSub = await prisma.subscription.findFirst({
-      where: { id: userId, status: "active" },
+      where: { referenceId: userId, status: "active" },
     });
 
-    if (!activeSub || activeSub.plan === "none") {
+    if (
+      !activeSub ||
+      (activeSub.plan === "none" && activeSub.tokenBalance <= 0)
+    ) {
       return new Response("You do not have an active plan", { status: 403 });
-    }
-
-    if (activeSub.tokenBalance <= 0) {
-      return new Response("Not enough tokens in your plan", { status: 403 });
     }
 
     const chat = await prisma.chat.findUnique({
