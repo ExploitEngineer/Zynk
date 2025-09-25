@@ -64,13 +64,13 @@ export const useChatStore = create<ChatStore>((set, get: () => ChatStore) => ({
     try {
       const res = await fetch("/api/subscription");
 
+      const text = await res.text();
       if (!res.ok) {
-        const errText = await res.text();
-        toast.error(errText || "Subscription check failed");
-        throw new Error(errText);
+        toast.error(text || "Subscription check failed");
+        throw new Error(text);
       }
 
-      const data = await res.json();
+      const data = JSON.parse(text);
       return data;
     } catch (err: any) {
       console.error("checkSubscription error:", err);
