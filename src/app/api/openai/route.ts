@@ -19,6 +19,18 @@ export async function POST(req: Request): Promise<Response> {
 
     const userId = session.user.id;
 
+    const activeSub = await prisma.subscription.findFirst({
+      where: { id: userId, status: "active" },
+    });
+
+    if (!activeSub || activeSub.plan === "none") {
+      return new Response("You do not have an active plan", { status: 403 });
+    }
+
+    if (activeSub.tokenBalance <= 0) {
+      return new Response("Not enough tokens in your plan", { status: 403 });
+    }
+
     const chat = await prisma.chat.findUnique({
       where: { id: chatId },
     });
@@ -87,18 +99,6 @@ export async function POST(req: Request): Promise<Response> {
               totalTokens: totalUsed,
             },
           });
-
-          const activeSub = await prisma.subscription.findFirst({
-            where: { id: userId, status: "active" },
-          });
-
-          if (!activeSub) {
-            throw new Error("No active subscription found");
-          }
-
-          if (activeSub.tokenBalance < totalUsed) {
-            throw new Error("Not enough tokens left in your plan");
-          }
 
           await prisma.subscription.update({
             where: { id: activeSub.id },
